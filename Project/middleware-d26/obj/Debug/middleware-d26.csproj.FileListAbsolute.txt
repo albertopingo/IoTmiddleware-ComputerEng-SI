@@ -65,3 +65,7 @@ C:\Users\Pingosus\Desktop\project-IS\Project\middleware-d26\obj\Debug\middleware
 C:\Users\Pingosus\Desktop\project-IS\Project\middleware-d26\obj\Debug\middleware-d26.csproj.CopyComplete
 C:\Users\Pingosus\Desktop\project-IS\Project\middleware-d26\obj\Debug\middleware-d26.dll
 C:\Users\Pingosus\Desktop\project-IS\Project\middleware-d26\obj\Debug\middleware-d26.pdb
+C:\Users\Pingosus\Desktop\project-IS\Project\middleware-d26\bin\EntityFramework.dll
+C:\Users\Pingosus\Desktop\project-IS\Project\middleware-d26\bin\EntityFramework.SqlServer.dll
+C:\Users\Pingosus\Desktop\project-IS\Project\middleware-d26\bin\EntityFramework.xml
+C:\Users\Pingosus\Desktop\project-IS\Project\middleware-d26\bin\EntityFramework.SqlServer.xml
