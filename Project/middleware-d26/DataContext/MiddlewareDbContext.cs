@@ -1,14 +1,16 @@
 ﻿using middleware_d26.Models;
-using System;
-using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
-using System.Web;
 
-namespace middleware_d26.DataDbContext
+namespace middleware_d26.DataContext
 {
     public class MiddlewareDbContext : DbContext
     {
+
+        static MiddlewareDbContext()
+        {
+            Database.SetInitializer(new MiddlewareDbInitializer());
+        }
+
         public MiddlewareDbContext() : base(Properties.Settings.Default.ConnStr)
         {
         }
