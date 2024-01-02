@@ -96,12 +96,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="Controllers\Container.cs" />
+    <Compile Include="Controllers\ContainerController.cs" />
     <Compile Include="DataContext\MiddlewareDbContext.cs" />
     <Compile Include="DataContext\MiddlewareDbInitializer.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Handlers\SomiodMessageHandler.cs" />
     <Compile Include="Migrations\202312272318114_InitialCreate.cs" />
     <Compile Include="Migrations\202312272318114_InitialCreate.designer.cs">
       <DependentUpon>202312272318114_InitialCreate.cs</DependentUpon>
