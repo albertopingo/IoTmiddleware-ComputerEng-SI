@@ -7,6 +7,9 @@ using uPLibrary.Networking.M2Mqtt;
 using uPLibrary.Networking.M2Mqtt.Messages;
 using System.Linq;
 using System;
+using middleware_d26.Services;
+using System.Net;
+using System.Net.Http.Formatting;
 
 public class SomiodMessageHandler : DelegatingHandler
 {
@@ -16,11 +19,17 @@ public class SomiodMessageHandler : DelegatingHandler
     //{
     //    _mqttClientFactory = mqttClientFactory;
     //}
+    private readonly DiscoverService discoverService;
+    public SomiodMessageHandler(DiscoverService discoverService)
+    {
+        this.discoverService = discoverService ?? throw new ArgumentNullException(nameof(discoverService));
+    }
+
+    // ...
 
     async protected override Task<HttpResponseMessage> SendAsync(
-            HttpRequestMessage request, CancellationToken cancellationToken)
+        HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        // Check if the request is a discover request
         if (request.Headers.TryGetValues("somiod-discover", out var discoverValues))
         {
             var discoverType = discoverValues.FirstOrDefault();
@@ -28,30 +37,46 @@ public class SomiodMessageHandler : DelegatingHandler
             switch (discoverType)
             {
                 case "application":
-                    // Logic to return all applications (names)
-                    break;
+                    var applications = discoverService.GetApplications();
+                    return CreateResponse(HttpStatusCode.OK, applications);
 
                 case "container":
-                    // Logic to return all containers (names) under the specified parent
-                    break;
+                    // Extract application name from route data
+                    var routeData = request.GetRouteData();
+                    var applicationName = routeData.Values["id"] as string;
+
+                    if (string.IsNullOrEmpty(applicationName))
+                    {
+                        // Handle the case where applicationName is not present in the route data
+                        return CreateResponse(HttpStatusCode.BadRequest, "Application name not specified in the route.");
+                    }
+
+                    var containers = discoverService.GetContainers(applicationName);
+                    return CreateResponse(HttpStatusCode.OK, containers);
 
                 case "data":
-                    // Logic to return all data records (names) under the specified parent
-                    break;
+                    // Extract parent name from route data
+                    var routeDataData = request.GetRouteData();
+                    var parentNameData = routeDataData.Values["id"] as string;
+
+                    if (string.IsNullOrEmpty(parentNameData))
+                    {
+                        // Handle the case where parentName is not present in the route data
+                        return CreateResponse(HttpStatusCode.BadRequest, "Parent name not specified in the route.");
+                    }
+
+                    var dataRecords = discoverService.GetDataRecords(parentNameData);
+                    return CreateResponse(HttpStatusCode.OK, dataRecords);
 
                 case "subscription":
+                    //var subscription = await request.Content.ReadAsAsync<Subscription>();
                     // Logic to handle subscription creation
-                    var subscription = await request.Content.ReadAsAsync<Subscription>(); // Assuming Subscription class
-                    //SetupNotification(subscription);
-                    break;
+                    // SetupNotification(subscription);
+                    return CreateResponse(HttpStatusCode.OK, "Subscription created successfully");
 
                 default:
-                    // Handle unknown discover type
-                    break;
+                    return CreateResponse(HttpStatusCode.BadRequest, "Unknown discover type");
             }
-
-            // Return a response for discover requests
-            return new HttpResponseMessage();
         }
         else
         {
@@ -68,6 +93,16 @@ public class SomiodMessageHandler : DelegatingHandler
             return response;
         }
     }
+
+    private HttpResponseMessage CreateResponse(HttpStatusCode statusCode, object content)
+    {
+        return new HttpResponseMessage(statusCode)
+        {
+            Content = new ObjectContent(content.GetType(), content, new XmlMediaTypeFormatter())
+        };
+    }
+
+
 
     //private void SetupNotification(Subscription subscription)
     //{

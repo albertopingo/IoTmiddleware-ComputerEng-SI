@@ -17,22 +17,8 @@ namespace middleware_d26
     {
         protected void Application_Start()
         {
-            var container = new UnityContainer();
-            RegisterTypes(container);
-
             // Configure Web API
             GlobalConfiguration.Configure(WebApiConfig.Register);
-
-            // Set Unity as the dependency resolver for Web API
-            GlobalConfiguration.Configuration.DependencyResolver = new UnityDependencyResolver(container);
-        }
-
-        private static void RegisterTypes(IUnityContainer container)
-        {
-            // Register your types (services, repositories, etc.) with Unity here
-            // For example:
-            container.RegisterType<MiddlewareDbContext>(new HierarchicalLifetimeManager());
-            container.RegisterType<ContainerService>(new HierarchicalLifetimeManager());
         }
     }
 }

@@ -159,6 +159,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Services\ContainerService.cs" />
+    <Compile Include="Services\DiscoverService.cs" />
     <Compile Include="Services\ICategoryService.cs" />
   </ItemGroup>
   <ItemGroup>
