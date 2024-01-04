@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using middleware_d26.Models;
 using middleware_d26.DataContext;
+using System.Threading.Tasks;
 
 namespace middleware_d26.Services
 {
@@ -15,98 +16,93 @@ namespace middleware_d26.Services
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public IEnumerable<Container> GetContainers(string applicationName)
+        public async Task CreateContainer(string applicationName, string containerName)
         {
-            var parentApplication = dbContext.Applications.FirstOrDefault(a => a.Name == applicationName);
+            var parentApplication = dbContext.Applications.FirstOrDefault(a => a.Name == applicationName)
+                ?? throw new Exception("Parent application not found");
 
-            if (parentApplication == null)
+            if (dbContext.Containers.Any(c =>
+                c.Parent == parentApplication.Id && c.Name == containerName))
             {
-                // Handle the case where the parent application is not found
-                // For example, you can return an empty list or throw a more specific exception.
-                return Enumerable.Empty<Container>();
+                throw new Exception("Container already exists");
             }
 
-            var containers = dbContext.Containers.Where(c => c.Parent == parentApplication.Id).ToList();
-            return containers;
-        }
-
-
-        public Container GetContainer(string applicationName, string containerName)
-        {
-            // Replace with your logic to retrieve a specific container based on applicationName and containerName
-            var parentApplication = dbContext.Applications.FirstOrDefault(a => a.Name == applicationName);
-
-            if (parentApplication == null)
+            var container = new Container
             {
-                throw new Exception("Parent application not found");
-            }
-
-            var container = dbContext.Containers.FirstOrDefault(c =>
-                c.Parent == parentApplication.Id && c.Name == containerName);
-
-            return container;
-        }
-
-        public void CreateContainer(string applicationName, Container container)
-        {
-            // Replace with your logic to create a new container
-            var parentApplication = dbContext.Applications.FirstOrDefault(a => a.Name == applicationName);
-
-            if (parentApplication == null)
-            {
-                throw new Exception("Parent application not found");
-            }
-
-            container.Creation_Dt = DateTime.Now;
-            container.Parent = parentApplication.Id;
+                Name = containerName,
+                Creation_Dt = DateTime.Now,
+                Parent = parentApplication.Id
+            };
 
             dbContext.Containers.Add(container);
-            dbContext.SaveChanges();
+            await dbContext.SaveChangesAsync();
         }
 
-        public void UpdateContainer(string applicationName, string containerName, Container updatedContainer)
+        public async Task UpdateContainer(string applicationName, string containerName, string newContainerName)
         {
-            // Replace with your logic to update an existing container
-            var parentApplication = dbContext.Applications.FirstOrDefault(a => a.Name == applicationName);
+            // check if parent application exists
+            var parentApplication = dbContext.Applications.FirstOrDefault(a => a.Name == applicationName)
+                ?? throw new Exception("Parent application not found");
 
-            if (parentApplication == null)
+            // check if new name already exists
+            if (dbContext.Containers.Any(c =>
+                c.Parent == parentApplication.Id && c.Name == containerName))
             {
-                throw new Exception("Parent application not found");
+                throw new Exception("Container already exists");
             }
 
+            // check if container exists
             var container = dbContext.Containers.FirstOrDefault(c =>
-                c.Parent == parentApplication.Id && c.Name == containerName);
+                           c.Parent == parentApplication.Id && c.Name == containerName)
+                ?? throw new Exception("Container not found");
 
-            if (container == null)
-            {
-                throw new Exception("Container not found");
-            }
-
-            container.Name = updatedContainer.Name;
-
-            dbContext.SaveChanges();
+            container.Name = newContainerName;
+            await dbContext.SaveChangesAsync();
         }
 
-        public void DeleteContainer(string applicationName, string containerName)
+        public async Task DeleteContainer(string applicationName, string containerName)
         {
-            // Replace with your logic to delete an existing container
-            var parentApplication = dbContext.Applications.FirstOrDefault(a => a.Name == applicationName);
-
-            if (parentApplication == null)
-            {
-                throw new Exception("Parent application not found");
-            }
+            var parentApplication = dbContext.Applications.FirstOrDefault(a => a.Name == applicationName)
+                ?? throw new Exception("Parent application not found");
 
             var container = dbContext.Containers.FirstOrDefault(c =>
-                c.Parent == parentApplication.Id && c.Name == containerName);
-
-            if (container == null)
-            {
-                throw new Exception("Container not found");
-            }
-
+                c.Parent == parentApplication.Id && c.Name == containerName)
+                ?? throw new Exception("Container not found");
+            
             dbContext.Containers.Remove(container);
-            dbContext.SaveChanges();
+            await dbContext.SaveChangesAsync();
         }
+
+        //public Task<IEnumerable<Container>> GetContainers(string applicationName)
+        //{
+        //    var parentApplication = dbContext.Applications.FirstOrDefault(a => a.Name == applicationName);
+
+        //    if (parentApplication == null)
+        //    {
+        //        // Handle the case where the parent application is not found
+        //        // For example, you can return an empty list or throw a more specific exception.
+        //        return Enumerable.Empty<Container>();
+        //    }
+
+        //    var containers = dbContext.Containers.Where(c => c.Parent == parentApplication.Id).ToList();
+        //    return containers;
+        //}
+
+
+        //public Task<Container> GetContainer(string applicationName, string containerName)
+        //{
+        //    // Replace with your logic to retrieve a specific container based on applicationName and containerName
+        //    var parentApplication = dbContext.Applications.FirstOrDefault(a => a.Name == applicationName);
+
+        //    if (parentApplication == null)
+        //    {
+        //        throw new Exception("Parent application not found");
+        //    }
+
+        //    var container = dbContext.Containers.FirstOrDefault(c =>
+        //        c.Parent == parentApplication.Id && c.Name == containerName);
+
+        //    return container;
+        //}
     }
 }

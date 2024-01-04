@@ -1,8 +1,5 @@
 ﻿using middleware_d26.DataContext;
 using middleware_d26.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Web.Http;
 using Unity;
 using Unity.AspNet.WebApi;
@@ -28,9 +25,7 @@ namespace middleware_d26
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
-            );
-
-            
+            );            
         }
 
         private static void RegisterTypes(IUnityContainer container)
@@ -40,6 +35,7 @@ namespace middleware_d26
             container.RegisterType<MiddlewareDbContext>(new HierarchicalLifetimeManager());
             container.RegisterType<ContainerService>(new HierarchicalLifetimeManager());
             container.RegisterType<DiscoverService>(new HierarchicalLifetimeManager());
+            container.RegisterType<SubscriptionService>(new HierarchicalLifetimeManager());
         }
     }
 }

@@ -137,6 +137,7 @@
     <Compile Include="App_Start\UnityWebApiActivator.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\ContainerController.cs" />
+    <Compile Include="Controllers\SubscriptionController.cs" />
     <Compile Include="DataContext\MiddlewareDbContext.cs" />
     <Compile Include="DataContext\MiddlewareDbInitializer.cs" />
     <Compile Include="Global.asax.cs">
@@ -158,9 +159,9 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Services\SubscriptionService.cs" />
     <Compile Include="Services\ContainerService.cs" />
     <Compile Include="Services\DiscoverService.cs" />
-    <Compile Include="Services\ICategoryService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

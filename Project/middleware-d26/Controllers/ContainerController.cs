@@ -1,102 +1,113 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web.Http;
 using middleware_d26.DataContext;
 using middleware_d26.Models;
 using middleware_d26.Services;
 
-[RoutePrefix("api/somoid")]
-public class ContainerController : ApiController
+namespace middleware_d26.Controllers
 {
-    private readonly ContainerService containerService;
-
-    public ContainerController(ContainerService containerService)
+    [RoutePrefix("api/somiod")]
+    public class ContainerController : ApiController
     {
-        this.containerService = containerService ?? throw new ArgumentNullException(nameof(containerService));
-    }
+        private readonly ContainerService containerService;
 
-    public ContainerController()
-    {
-    }
-
-    [HttpGet]
-    [Route("{applicationName}")]
-    public IHttpActionResult GetContainers(string applicationName)
-    {
-        try
+        public ContainerController(ContainerService containerService)
         {
-            var containers = containerService.GetContainers(applicationName);
-            return Ok(containers);
+            this.containerService = containerService ?? throw new ArgumentNullException(nameof(containerService));
         }
-        catch (Exception ex)
-        {
-            return InternalServerError(ex);
-        }
-    }
 
-    [HttpGet]
-    [Route("{applicationName}/{containerName}")]
-    public IHttpActionResult GetContainer(string applicationName, string containerName)
-    {
-        try
+        public ContainerController()
         {
-            var container = containerService.GetContainer(applicationName, containerName);
-            if (container == null)
+        }
+
+        // 
+        [HttpPost]
+        [Route("{applicationName}")]
+        public async Task<IHttpActionResult> CreateContainer(string applicationName, string containerName)
+        {
+            try
             {
-                return Content(HttpStatusCode.NotFound, "Container not found");
+                if (string.IsNullOrWhiteSpace(containerName))
+                {
+                    return BadRequest("Container name is required");
+                }
+
+                await containerService.CreateContainer(applicationName, containerName);
+                return Created(Request.RequestUri + containerName, containerName);
             }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
 
-            return Ok(container);
-        }
-        catch (Exception ex)
+        [HttpPut]
+        [Route("{applicationName}/{containerName}")]
+        public async Task<IHttpActionResult> ModifyContainer(string applicationName, string containerName, string newContainerName)
         {
-            return InternalServerError(ex);
+            try
+            {
+                await containerService.UpdateContainer(applicationName, containerName, newContainerName);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
         }
-    }
 
-    [HttpPost]
-    [Route("{applicationName}")]
-    public IHttpActionResult CreateContainer(string applicationName, [FromBody] Container container)
-    {
-        try
+        [HttpDelete]
+        [Route("{applicationName}/{containerName}")]
+        public async Task<IHttpActionResult> DeleteContainer(string applicationName, string containerName)
         {
-            containerService.CreateContainer(applicationName, container);
-            return Created(Request.RequestUri + container.Id.ToString(), container);
+            try
+            {
+                await containerService.DeleteContainer(applicationName, containerName);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
         }
-        catch (Exception ex)
-        {
-            return InternalServerError(ex);
-        }
-    }
 
-    [HttpPut]
-    [Route("{applicationName}/{containerName}")]
-    public IHttpActionResult ModifyContainer(string applicationName, string containerName, [FromBody] Container updatedContainer)
-    {
-        try
-        {
-            containerService.UpdateContainer(applicationName, containerName, updatedContainer);
-            return Ok();
-        }
-        catch (Exception ex)
-        {
-            return InternalServerError(ex);
-        }
-    }
+        //[HttpGet]
+        //[Route("{applicationName}")]
+        //public IHttpActionResult GetContainers(string applicationName)
+        //{
+        //    try
+        //    {
+        //        var containers = containerService.GetContainers(applicationName);
+        //        return Ok(containers);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return InternalServerError(ex);
+        //    }
+        //}
 
-    [HttpDelete]
-    [Route("{applicationName}/{containerName}")]
-    public IHttpActionResult DeleteContainer(string applicationName, string containerName)
-    {
-        try
-        {
-            containerService.DeleteContainer(applicationName, containerName);
-            return Ok();
-        }
-        catch (Exception ex)
-        {
-            return InternalServerError(ex);
-        }
+        //[HttpGet]
+        //[Route("{applicationName}/{containerName}")]
+        //public IHttpActionResult GetContainer(string applicationName, string containerName)
+        //{
+        //    try
+        //    {
+        //        var container = containerService.GetContainer(applicationName, containerName);
+        //        if (container == null)
+        //        {
+        //            return Content(HttpStatusCode.NotFound, "Container not found");
+        //        }
+
+        //        return Ok(container);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return InternalServerError(ex);
+        //    }
+        //}
     }
 }
