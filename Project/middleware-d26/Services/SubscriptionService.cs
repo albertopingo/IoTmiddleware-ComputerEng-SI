@@ -36,14 +36,17 @@ namespace middleware_d26.Services
             await dbContext.SaveChangesAsync();
         }
 
-        // create subscriptions, only needs in the body: name and endpoint
-
-        public async Task DeleteSubscription(string applicationName, string subscriptionName)
+        public async Task DeleteSubscription(string applicationName, string containerName, int subscriptionId)
         {
             var parentApplication = dbContext.Applications.FirstOrDefault(a => a.Name == applicationName) 
                 ?? throw new Exception("Parent application not found");
             
-            var subscription = dbContext.Subscriptions.FirstOrDefault(s => s.Parent == parentApplication.Id && s.Name == subscriptionName) 
+            var parentContainer = dbContext.Containers.FirstOrDefault(c =>
+                                                 c.Parent == parentApplication.Id && c.Name == containerName) 
+                ?? throw new Exception("Parent container not found");
+            
+            var subscription = dbContext.Subscriptions.FirstOrDefault(s =>
+                           s.Parent == parentContainer.Id && s.Id == subscriptionId) 
                 ?? throw new Exception("Subscription not found");
             
             dbContext.Subscriptions.Remove(subscription);

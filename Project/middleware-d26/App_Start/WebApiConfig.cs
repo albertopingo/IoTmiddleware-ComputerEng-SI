@@ -33,9 +33,10 @@ namespace middleware_d26
             // Register your types (services, repositories, etc.) with Unity here
             // For example:
             container.RegisterType<MiddlewareDbContext>(new HierarchicalLifetimeManager());
-            container.RegisterType<ContainerService>(new HierarchicalLifetimeManager());
+            container.RegisterType<SubscriptionService>(new HierarchicalLifetimeManager());
             container.RegisterType<DiscoverService>(new HierarchicalLifetimeManager());
             container.RegisterType<SubscriptionService>(new HierarchicalLifetimeManager());
+            container.RegisterType<DataService>(new HierarchicalLifetimeManager());
         }
     }
 }

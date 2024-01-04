@@ -40,12 +40,12 @@ namespace middleware_d26.Controllers
       
 
         [HttpDelete]
-        [Route("{applicationName}/{subscriptionName}")]
-        public async Task<IHttpActionResult> DeleteSubscription(string applicationName, string subscriptionName)
+        [Route("{applicationName}/{containerName}")]
+        public async Task<IHttpActionResult> DeleteSubscription(string applicationName, string containerName, int subscriptionId)
         {
             try
             {
-                await subscriptionService.DeleteSubscription(applicationName, subscriptionName);
+                await subscriptionService.DeleteSubscription(applicationName, containerName, subscriptionId);
                 return Ok();
             }
             catch (Exception ex)
