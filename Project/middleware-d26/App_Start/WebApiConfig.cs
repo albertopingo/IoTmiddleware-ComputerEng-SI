@@ -3,6 +3,7 @@ using middleware_d26.Services;
 using System.Web.Http;
 using Unity;
 using Unity.AspNet.WebApi;
+using Unity.Injection;
 using Unity.Lifetime;
 
 namespace middleware_d26
@@ -33,8 +34,10 @@ namespace middleware_d26
             // Register your types (services, repositories, etc.) with Unity here
             // For example:
             container.RegisterType<MiddlewareDbContext>(new HierarchicalLifetimeManager());
-            container.RegisterType<SubscriptionService>(new HierarchicalLifetimeManager());
+            container.RegisterType<MqttService>(new HierarchicalLifetimeManager());
             container.RegisterType<DiscoverService>(new HierarchicalLifetimeManager());
+
+            container.RegisterType<ContainerService>(new HierarchicalLifetimeManager());
             container.RegisterType<SubscriptionService>(new HierarchicalLifetimeManager());
             container.RegisterType<DataService>(new HierarchicalLifetimeManager());
         }

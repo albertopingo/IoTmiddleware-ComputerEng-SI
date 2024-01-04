@@ -34,6 +34,17 @@ namespace middleware_d26.Services
 
             dbContext.DataRecords.Add(data);
             await dbContext.SaveChangesAsync();
+
+            // Fetch the container's subscription endpoint
+            var subscription = dbContext.Subscriptions.FirstOrDefault(s => s.Parent == parentContainer.Id) 
+                ?? throw new Exception("Subscription not found");
+
+            var topic = $"{applicationName}/{containerName}";
+
+            using (var mqttService = new MqttService(subscription.Endpoint))
+            {
+                mqttService.PublishMessage(topic, content);
+            }
         }
 
         public async Task DeleteData(string applicationName, string containerName, int dataId)
