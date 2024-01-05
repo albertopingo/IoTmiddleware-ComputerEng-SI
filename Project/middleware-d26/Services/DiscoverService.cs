@@ -59,5 +59,39 @@ namespace middleware_d26.Services
                 .ToList();
         }
 
+        public IEnumerable<string> GetSubscriptions(string applicationName, string containerName)
+        {
+            try
+            {
+                // Logic to return all subscription names under the specified parent container
+                var parentApplication = dbContext.Applications.FirstOrDefault(a => a.Name == applicationName);
+
+                if (parentApplication == null)
+                {
+                    throw new Exception($"Parent application not found for name: {applicationName}");
+                }
+
+                var parentContainer = dbContext.Containers
+                    .FirstOrDefault(c => c.Parent == parentApplication.Id && c.Name == containerName);
+
+                if (parentContainer == null)
+                {
+                    throw new Exception($"Parent container not found for name: {containerName}");
+                }
+
+                return dbContext.Subscriptions
+                    .Where(s => s.Parent == parentContainer.Id)
+                    .Select(s => s.Name)
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                Console.WriteLine($"Exception in GetSubscriptions: {ex.Message}");
+                throw; // Re-throw the exception to maintain the original exception details
+            }
+        }
+
+
     }
 }
