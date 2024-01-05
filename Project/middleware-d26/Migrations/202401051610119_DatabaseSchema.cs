@@ -3,7 +3,7 @@
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class InitialCreate : DbMigration
+    public partial class DatabaseSchema : DbMigration
     {
         public override void Up()
         {
@@ -12,8 +12,8 @@
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        Name = c.String(nullable: false, maxLength: 50),
-                        Creation_Dt = c.DateTime(),
+                        Name = c.String(nullable: false, maxLength: 255),
+                        Creation_Dt = c.DateTime(nullable: false),
                     })
                 .PrimaryKey(t => t.Id);
             
@@ -22,9 +22,9 @@
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        Name = c.String(maxLength: 50),
-                        Creation_Dt = c.DateTime(),
-                        Parent = c.Int(),
+                        Name = c.String(nullable: false, maxLength: 255),
+                        Creation_Dt = c.DateTime(nullable: false),
+                        Parent = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.Id);
             
@@ -33,9 +33,10 @@
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        Content = c.String(maxLength: 50),
-                        Creation_Dt = c.DateTime(),
-                        Parent = c.Int(),
+                        Name = c.String(nullable: false, maxLength: 255),
+                        Content = c.String(nullable: false, maxLength: 255),
+                        Creation_Dt = c.DateTime(nullable: false),
+                        Parent = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.Id);
             
@@ -44,11 +45,11 @@
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        Name = c.String(nullable: false, maxLength: 50),
-                        Creation_Dt = c.DateTime(),
-                        Parent = c.Int(),
-                        Event = c.String(maxLength: 50),
-                        Endpoint = c.String(maxLength: 50),
+                        Name = c.String(nullable: false, maxLength: 255),
+                        Creation_Dt = c.DateTime(nullable: false),
+                        Parent = c.Int(nullable: false),
+                        Event = c.String(nullable: false, maxLength: 255),
+                        Endpoint = c.String(nullable: false, maxLength: 255),
                     })
                 .PrimaryKey(t => t.Id);
             

@@ -13,11 +13,18 @@ namespace middleware_d26.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        [StringLength(50)]
+        [Required]
+        [StringLength(255)]
+        public string Name { get; set; }
+
+        [Required]
+        [StringLength(255)]
         public string Content { get; set; }
 
+        [Required]
         public DateTime? Creation_Dt { get; set; }
 
+        [Required]
         public int? Parent { get; set; }
     }
 }

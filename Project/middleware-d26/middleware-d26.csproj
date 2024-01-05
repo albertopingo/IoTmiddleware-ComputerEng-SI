@@ -146,9 +146,9 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Handlers\SomiodMessageHandler.cs" />
-    <Compile Include="Migrations\202312272318114_InitialCreate.cs" />
-    <Compile Include="Migrations\202312272318114_InitialCreate.designer.cs">
-      <DependentUpon>202312272318114_InitialCreate.cs</DependentUpon>
+    <Compile Include="Migrations\202401051610119_DatabaseSchema.cs" />
+    <Compile Include="Migrations\202401051610119_DatabaseSchema.designer.cs">
+      <DependentUpon>202401051610119_DatabaseSchema.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Application.cs" />
@@ -185,10 +185,9 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202312272318114_InitialCreate.resx">
-      <DependentUpon>202312272318114_InitialCreate.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202401051610119_DatabaseSchema.resx">
+      <DependentUpon>202401051610119_DatabaseSchema.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
