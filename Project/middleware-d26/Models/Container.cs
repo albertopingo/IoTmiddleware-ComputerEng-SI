@@ -19,6 +19,7 @@ namespace middleware_d26.Models
 
         public DateTime? Creation_Dt { get; set; }
 
+        [ForeignKey("ParentId")]
         public int? Parent { get; set; }
     }
 }

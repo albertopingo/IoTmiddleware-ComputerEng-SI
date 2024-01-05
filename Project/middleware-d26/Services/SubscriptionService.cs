@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using middleware_d26.Models;
+using middleware_d26.Models.DTOs;
 using middleware_d26.DataContext;
 using System.Threading.Tasks;
 
@@ -16,8 +17,16 @@ namespace middleware_d26.Services
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public async Task CreateSubscription(string applicationName, string containerName, Subscription subscription)
+        public async Task CreateSubscription(string applicationName, string containerName, SubscriptionDTO subscriptionDTO)
         {
+            //validate subscriptionDTO xml
+            if (subscriptionDTO.Name == null || subscriptionDTO.Endpoint == null || subscriptionDTO.EventType == null)
+            {
+                throw new Exception("SubscriptionDTO is not valid");
+            }
+
+            
+
             var parentApplication = dbContext.Applications.FirstOrDefault(a => a.Name == applicationName) 
                 ?? throw new Exception("Parent application not found");
 
@@ -26,12 +35,18 @@ namespace middleware_d26.Services
                 ?? throw new Exception("Parent container not found");
 
             if (dbContext.Subscriptions.Any(s =>
-                s.Parent == parentContainer.Id && s.Name == subscription.Name))
+                s.Parent == parentContainer.Id && s.Name == subscriptionDTO.Name))
             {
                 throw new Exception("Subscription already exists");
             }
 
-            subscription.Parent = parentContainer.Id;
+            var subscription = new Subscription
+            {
+                Name = subscriptionDTO.Name,
+                Endpoint = subscriptionDTO.Endpoint,
+                Event = subscriptionDTO.EventType,
+                Parent = parentContainer.Id
+            };
             dbContext.Subscriptions.Add(subscription);
             await dbContext.SaveChangesAsync();
         }

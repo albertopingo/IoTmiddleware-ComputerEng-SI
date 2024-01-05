@@ -7,6 +7,7 @@ using System.Web.Http;
 using middleware_d26.Services;
 using middleware_d26.Models;
 using System.Threading.Tasks;
+using middleware_d26.Models.DTOs;
 
 
 namespace middleware_d26.Controllers
@@ -25,12 +26,12 @@ namespace middleware_d26.Controllers
 
         [HttpPost]
         [Route("{applicationName}/{containerName}")]
-        public async Task<IHttpActionResult> CreateSubscription(string applicationName, string containerName, [FromBody] Subscription subscription)
+        public async Task<IHttpActionResult> CreateSubscription(string applicationName, string containerName, [FromBody] SubscriptionDTO subscriptionDTO)
         {
             try
             {
-                await subscriptionService.CreateSubscription(applicationName, containerName, subscription);
-                return Ok();
+                await subscriptionService.CreateSubscription(applicationName, containerName, subscriptionDTO);
+                return Created(Request.RequestUri, subscriptionDTO.Endpoint);
             }
             catch (Exception ex)
             {
@@ -40,7 +41,7 @@ namespace middleware_d26.Controllers
       
 
         [HttpDelete]
-        [Route("{applicationName}/{containerName}")]
+        [Route("{applicationName}/{containerName}/sub/{subscriptionId}")]
         public async Task<IHttpActionResult> DeleteSubscription(string applicationName, string containerName, int subscriptionId)
         {
             try

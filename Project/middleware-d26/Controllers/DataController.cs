@@ -40,7 +40,7 @@ namespace middleware_d26.Controllers
       
 
         [HttpDelete]
-        [Route("{applicationName}/{containerName}/{dataId}")]
+        [Route("{applicationName}/{containerName}/data/{dataId}")]
         public async Task<IHttpActionResult> DeleteData(string applicationName, string containerName, int dataId)
         {
             try

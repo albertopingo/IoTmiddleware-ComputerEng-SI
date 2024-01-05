@@ -10,26 +10,57 @@ using System;
 using middleware_d26.Services;
 using System.Net;
 using System.Net.Http.Formatting;
+using System.Xml.Schema;
+using middleware_d26.Models.DTOs;
+using System.Data.Entity.Core.Metadata.Edm;
+using System.Security.Cryptography;
+using System.Xml.Linq;
+using System.IO;
 
 public class SomiodMessageHandler : DelegatingHandler
 {
-    //private readonly IMqttClientFactory _mqttClientFactory; // Assuming you have an MQTT client factory
-
-    //public SomiodMessageHandler(IMqttClientFactory mqttClientFactory)
-    //{
-    //    _mqttClientFactory = mqttClientFactory;
-    //}
     private readonly DiscoverService discoverService;
+    private XmlSchemaSet schemaSet;
+
+    private bool isValid = true;
+    private string validationMessage;
+    public string ValidationMessage
+    {
+        get { return validationMessage; }
+    }
+
     public SomiodMessageHandler(DiscoverService discoverService)
     {
         this.discoverService = discoverService ?? throw new ArgumentNullException(nameof(discoverService));
+        this.schemaSet = new XmlSchemaSet();
+        //this.schemaSet.Add("", Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Schemas", "CreateApplication.xsd"));
+        //this.schemaSet.Add("", Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Schemas", "CreateContainer.xsd"));
+        //this.schemaSet.Add("", Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Schemas", "CreateData.xsd"));
+        this.schemaSet.Add("http://www.middleware-d26.com/schemas/CreateSubscription", Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Schemas", "CreateSubscription.xsd"));
     }
-
-    // ...
 
     async protected override Task<HttpResponseMessage> SendAsync(
         HttpRequestMessage request, CancellationToken cancellationToken)
-    {
+    {     
+        var requestMethod = request.Method;
+
+        switch (requestMethod.Method)
+        {
+            case "GET":
+                return await HandleGetRequest(request, cancellationToken);
+            case "POST":
+                return await HandlePostRequest(request, cancellationToken);
+            case "PUT":
+                return await HandlePutRequest(request, cancellationToken);
+            case "DELETE":
+                return await HandleDeleteRequest(request, cancellationToken);
+            default:
+                return CreateResponse(HttpStatusCode.BadRequest, "Unknown request method");
+        }        
+    }
+
+    private async Task<HttpResponseMessage> HandleGetRequest(HttpRequestMessage request, CancellationToken cancellationToken)
+    {      
         if (request.Headers.TryGetValues("somiod-discover", out var discoverValues))
         {
             var discoverType = discoverValues.FirstOrDefault();
@@ -94,6 +125,31 @@ public class SomiodMessageHandler : DelegatingHandler
         }
     }
 
+    private async Task<HttpResponseMessage> HandlePostRequest(HttpRequestMessage request, CancellationToken cancellationToken)
+    {
+        var content = await request.Content.ReadAsStringAsync();
+        var xml = XDocument.Parse(content);
+        var resType = xml.Root?.Element("res_type")?.Value;
+
+        if(string.IsNullOrEmpty(resType))
+        {
+            return CreateResponse(HttpStatusCode.BadRequest, "Res_type not specified");
+        }
+
+        ValidateXml(xml, resType);
+        return await base.SendAsync(request, cancellationToken);
+    }
+
+    private async Task<HttpResponseMessage> HandlePutRequest(HttpRequestMessage request, CancellationToken cancellationToken)
+    {
+        return await base.SendAsync(request, cancellationToken);
+    }
+
+    private async Task<HttpResponseMessage> HandleDeleteRequest(HttpRequestMessage request, CancellationToken cancellationToken)
+    {
+        return await base.SendAsync(request, cancellationToken);
+    }
+
     private HttpResponseMessage CreateResponse(HttpStatusCode statusCode, object content)
     {
         return new HttpResponseMessage(statusCode)
@@ -102,41 +158,36 @@ public class SomiodMessageHandler : DelegatingHandler
         };
     }
 
+    private bool ValidateXml(XDocument xml, string resType)
+    {
+        isValid = true;
+        try
+        {
+            ValidationEventHandler eventHandler = new ValidationEventHandler(ValidateMethod);
+            xml.Validate(schemaSet, eventHandler);
+        }
+        catch (Exception ex)
+        {
+            isValid = false;
+            validationMessage = string.Format("ERROR: {0}", ex.ToString());
+        }
 
+        return isValid;
+    }
 
-    //private void SetupNotification(Subscription subscription)
-    //{
-    //    // Logic to set up notification mechanism based on the subscription details
-
-    //    // For example, if MQTT
-    //    using (var mqttClient = _mqttClientFactory.CreateMqttClient())
-    //    {
-    //        mqttClient.Connect(Guid.NewGuid().ToString());
-
-    //        // Subscribe to the relevant MQTT channel based on the subscription details
-    //        var channelName = $"api/somiod/{subscription.Application}/{subscription.Container}";
-    //        mqttClient.Subscribe(new[] { channelName }, new byte[] { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE });
-
-    //        // Handle incoming MQTT messages and send notifications
-    //        mqttClient.MqttMsgPublishReceived += (sender, e) =>
-    //        {
-    //            // Logic to handle incoming MQTT messages and send notifications
-    //            var notificationContent = $"Event: {Encoding.UTF8.GetString(e.Message)}, Data: {subscription.Data}";
-    //            SendNotification(notificationContent, subscription.Endpoint);
-    //        };
-    //    }
-
-    //    // Dispose of the MQTT client appropriately (not shown in this example)
-    //}
-
-    //private void SendNotification(string content, string endpoint)
-    //{
-    //    // Logic to send notifications to the specified endpoint
-
-    //    // For example, if HTTP
-    //    using (var httpClient = new HttpClient())
-    //    {
-    //        httpClient.PostAsync(endpoint, new StringContent(content)).Wait();
-    //    }
-    //}
+    private void ValidateMethod(object sender, ValidationEventArgs args)
+    {
+        isValid = false;
+        switch (args.Severity)
+        {
+            case XmlSeverityType.Error:
+                validationMessage = string.Format("ERROR: {0}", args.Message);
+                break;
+            case XmlSeverityType.Warning:
+                validationMessage = string.Format("WARNING: {0}", args.Message);
+                break;
+            default:
+                break;
+        }
+    }
 }
