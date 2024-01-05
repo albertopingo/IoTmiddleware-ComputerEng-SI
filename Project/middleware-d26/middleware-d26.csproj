@@ -136,6 +136,7 @@
     <Compile Include="App_Start\UnityConfig.cs" />
     <Compile Include="App_Start\UnityWebApiActivator.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\ApplicationController.cs" />
     <Compile Include="Controllers\ContainerController.cs" />
     <Compile Include="Controllers\DataController.cs" />
     <Compile Include="Controllers\SubscriptionController.cs" />
@@ -161,6 +162,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Services\ApplicationService.cs" />
     <Compile Include="Services\DataService.cs" />
     <Compile Include="Services\MqttService.cs" />
     <Compile Include="Services\SubscriptionService.cs" />
