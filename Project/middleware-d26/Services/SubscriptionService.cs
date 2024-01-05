@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using middleware_d26.DataContext;
 using middleware_d26.Models;
 using middleware_d26.Models.DTOs;
-using middleware_d26.DataContext;
+using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace middleware_d26.Services
@@ -20,18 +19,16 @@ namespace middleware_d26.Services
         public async Task CreateSubscription(string applicationName, string containerName, SubscriptionDTO subscriptionDTO)
         {
             //validate subscriptionDTO xml
-            if (subscriptionDTO.Name == null || subscriptionDTO.Endpoint == null || subscriptionDTO.EventType == null)
+            if (subscriptionDTO.Name == null || subscriptionDTO.Endpoint == null || subscriptionDTO.Event == null)
             {
                 throw new Exception("SubscriptionDTO is not valid");
             }
 
-            
-
-            var parentApplication = dbContext.Applications.FirstOrDefault(a => a.Name == applicationName) 
+            var parentApplication = dbContext.Applications.FirstOrDefault(a => a.Name == applicationName)
                 ?? throw new Exception("Parent application not found");
 
             var parentContainer = dbContext.Containers.FirstOrDefault(c =>
-                                      c.Parent == parentApplication.Id && c.Name == containerName) 
+                                      c.Parent == parentApplication.Id && c.Name == containerName)
                 ?? throw new Exception("Parent container not found");
 
             if (dbContext.Subscriptions.Any(s =>
@@ -44,26 +41,45 @@ namespace middleware_d26.Services
             {
                 Name = subscriptionDTO.Name,
                 Endpoint = subscriptionDTO.Endpoint,
-                Event = subscriptionDTO.EventType,
+                Event = subscriptionDTO.Event,
                 Parent = parentContainer.Id
             };
             dbContext.Subscriptions.Add(subscription);
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task DeleteSubscription(string applicationName, string containerName, int subscriptionId)
+
+        internal Task<object> GetSubscription(string applicationName, string containerName, string subscriptionName)
         {
-            var parentApplication = dbContext.Applications.FirstOrDefault(a => a.Name == applicationName) 
+            var parentApplication = dbContext.Applications.FirstOrDefault(a => a.Name == applicationName)
                 ?? throw new Exception("Parent application not found");
-            
+
             var parentContainer = dbContext.Containers.FirstOrDefault(c =>
-                                                 c.Parent == parentApplication.Id && c.Name == containerName) 
+                                                 c.Parent == parentApplication.Id && c.Name == containerName)
                 ?? throw new Exception("Parent container not found");
-            
+
+            // get subscription with name
             var subscription = dbContext.Subscriptions.FirstOrDefault(s =>
-                           s.Parent == parentContainer.Id && s.Id == subscriptionId) 
+                           s.Parent == parentContainer.Id && s.Name == subscriptionName)
                 ?? throw new Exception("Subscription not found");
-            
+
+            return Task.FromResult<object>(subscription);
+        }
+
+
+        public async Task DeleteSubscription(string applicationName, string containerName, string subscriptionName)
+        {
+            var parentApplication = dbContext.Applications.FirstOrDefault(a => a.Name == applicationName)
+                ?? throw new Exception("Parent application not found");
+
+            var parentContainer = dbContext.Containers.FirstOrDefault(c =>
+                                                 c.Parent == parentApplication.Id && c.Name == containerName)
+                ?? throw new Exception("Parent container not found");
+
+            var subscription = dbContext.Subscriptions.FirstOrDefault(s =>
+                           s.Parent == parentContainer.Id && s.Name == subscriptionName)
+                ?? throw new Exception("Subscription not found");
+
             dbContext.Subscriptions.Remove(subscription);
             await dbContext.SaveChangesAsync();
         }

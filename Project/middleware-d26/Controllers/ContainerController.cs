@@ -1,12 +1,9 @@
-﻿using System;
-using System.ComponentModel;
-using System.Linq;
+﻿using middleware_d26.Models.DTOs;
+using middleware_d26.Services;
+using System;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
-using middleware_d26.DataContext;
-using middleware_d26.Models;
-using middleware_d26.Services;
 
 namespace middleware_d26.Controllers
 {
@@ -24,20 +21,44 @@ namespace middleware_d26.Controllers
         {
         }
 
-        // 
         [HttpPost]
         [Route("{applicationName}")]
-        public async Task<IHttpActionResult> CreateContainer(string applicationName, string containerName)
+        public async Task<IHttpActionResult> CreateContainer(string applicationName, [FromBody] CreateDTO createDTO)
+        {
+            if (createDTO == null || createDTO.ResType.ToLower() != "container")
+            {
+                return BadRequest("Invalid or missing res_type");
+            }
+
+            if (string.IsNullOrWhiteSpace(createDTO.Name))
+            {
+                return BadRequest("Container name required");
+            }
+
+            try
+            {
+                await containerService.CreateContainer(applicationName, createDTO.Name);
+                return Created(Request.RequestUri + createDTO.Name, createDTO.Name);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+        [HttpGet]
+        [Route("{applicationName}/{containerName}")]
+        public IHttpActionResult GetContainer(string applicationName, string containerName)
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(containerName))
+                var container = containerService.GetContainer(applicationName, containerName);
+                if (container == null)
                 {
-                    return BadRequest("Container name is required");
+                    return Content(HttpStatusCode.NotFound, "Container not found");
                 }
 
-                await containerService.CreateContainer(applicationName, containerName);
-                return Created(Request.RequestUri + containerName, containerName);
+                return Ok(container);
             }
             catch (Exception ex)
             {
@@ -74,40 +95,5 @@ namespace middleware_d26.Controllers
                 return InternalServerError(ex);
             }
         }
-
-        //[HttpGet]
-        //[Route("{applicationName}")]
-        //public IHttpActionResult GetContainers(string applicationName)
-        //{
-        //    try
-        //    {
-        //        var containers = containerService.GetContainers(applicationName);
-        //        return Ok(containers);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return InternalServerError(ex);
-        //    }
-        //}
-
-        //[HttpGet]
-        //[Route("{applicationName}/{containerName}")]
-        //public IHttpActionResult GetContainer(string applicationName, string containerName)
-        //{
-        //    try
-        //    {
-        //        var container = containerService.GetContainer(applicationName, containerName);
-        //        if (container == null)
-        //        {
-        //            return Content(HttpStatusCode.NotFound, "Container not found");
-        //        }
-
-        //        return Ok(container);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return InternalServerError(ex);
-        //    }
-        //}
     }
 }

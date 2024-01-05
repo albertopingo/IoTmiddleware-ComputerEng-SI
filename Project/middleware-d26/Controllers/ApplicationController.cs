@@ -1,12 +1,9 @@
-﻿using System;
-using System.ComponentModel;
-using System.Linq;
+﻿using middleware_d26.Models.DTOs;
+using middleware_d26.Services;
+using System;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
-using middleware_d26.DataContext;
-using middleware_d26.Models;
-using middleware_d26.Services;
 
 namespace middleware_d26.Controllers
 {
@@ -25,17 +22,42 @@ namespace middleware_d26.Controllers
 
         [HttpPost]
         [Route("")]
-        public async Task<IHttpActionResult> CreateApplication(string applicationName)
+        public async Task<IHttpActionResult> CreateApplication([FromBody] CreateDTO createDTO)
+        {
+            if (createDTO == null || createDTO.ResType.ToLower() != "application")
+            {
+                return BadRequest("Invalid or missing res_type");
+            }
+
+            if (string.IsNullOrWhiteSpace(createDTO.Name))
+            {
+                return BadRequest("Application name required");
+            }
+
+            try
+            {
+                await applicationService.CreateApplication(createDTO.Name);
+                return Created(Request.RequestUri + createDTO.Name, createDTO.Name);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+        [HttpGet]
+        [Route("{applicationName}")]
+        public IHttpActionResult GetApplication(string applicationName)
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(applicationName))
+                var application = applicationService.GetApplication(applicationName);
+                if (application == null)
                 {
-                    return BadRequest("Application name is required");
+                    return Content(HttpStatusCode.NotFound, "Application not found");
                 }
 
-                await applicationService.CreateApplication(applicationName);
-                return Created(Request.RequestUri + applicationName, applicationName);
+                return Ok(application);
             }
             catch (Exception ex)
             {
@@ -45,11 +67,11 @@ namespace middleware_d26.Controllers
 
         [HttpPut]
         [Route("{applicationName}")]
-        public async Task<IHttpActionResult> ModifyApplication(string applicationName,string newApplicationName)
+        public async Task<IHttpActionResult> ModifyApplication(string applicationName, string newApplicationName)
         {
             try
             {
-                await applicationService.UpdateApplication(applicationName,newApplicationName);
+                await applicationService.UpdateApplication(applicationName, newApplicationName);
                 return Ok();
             }
             catch (Exception ex)
@@ -65,25 +87,6 @@ namespace middleware_d26.Controllers
             {
                 await applicationService.DeleteApplication(applicationName);
                 return Ok();
-            }
-            catch (Exception ex)
-            {
-                return InternalServerError(ex);
-            }
-        }
-        [HttpGet]
-        [Route("{applicationName}")]
-        public IHttpActionResult GetApplication(string applicationName)
-        {
-            try
-            {
-                var application = applicationService.GetApplication(applicationName);
-                if (application == null)
-                {
-                    return Content(HttpStatusCode.NotFound, "Application not found");
-                }
-
-               return Ok(application);
             }
             catch (Exception ex)
             {

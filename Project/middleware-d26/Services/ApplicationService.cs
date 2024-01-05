@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using middleware_d26.DataContext;
 using middleware_d26.Models;
-using middleware_d26.DataContext;
+using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace middleware_d26.Services
@@ -42,7 +41,6 @@ namespace middleware_d26.Services
                 throw new Exception("Application already exists");
             }
 
-            // check if container exists
             var application = dbContext.Applications.FirstOrDefault(a =>
                             a.Name == applicationName)
                 ?? throw new Exception("Application not found");
@@ -59,7 +57,7 @@ namespace middleware_d26.Services
                 c.Parent == application.Id).ToList();
             if (containers.Any())
             {
-                foreach(var container in containers)
+                foreach (var container in containers)
                 {
                     dbContext.Containers.Remove(container);
                     await dbContext.SaveChangesAsync();
@@ -71,15 +69,10 @@ namespace middleware_d26.Services
         }
         public Task GetApplication(string applicationName)
         {
+            var application = dbContext.Applications.FirstOrDefault(a => a.Name == applicationName)
+                ?? throw new Exception("Application not found");
             
-            var application = dbContext.Applications.FirstOrDefault(a => a.Name == applicationName);
-
-            if (application == null)
-            {
-                throw new Exception("Application not found");
-            }
-
-            return application;
+            return Task.FromResult(application);
         }
     }
 }

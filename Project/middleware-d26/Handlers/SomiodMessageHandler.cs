@@ -1,26 +1,19 @@
-﻿using middleware_d26.Models;
-using System.Diagnostics;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Threading;
-using uPLibrary.Networking.M2Mqtt;
-using uPLibrary.Networking.M2Mqtt.Messages;
-using System.Linq;
+﻿using middleware_d26.Services;
 using System;
-using middleware_d26.Services;
-using System.Net;
-using System.Net.Http.Formatting;
-using System.Xml.Schema;
-using middleware_d26.Models.DTOs;
-using System.Data.Entity.Core.Metadata.Edm;
-using System.Security.Cryptography;
-using System.Xml.Linq;
 using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Formatting;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Xml.Linq;
+using System.Xml.Schema;
 
 public class SomiodMessageHandler : DelegatingHandler
 {
     private readonly DiscoverService discoverService;
-    private XmlSchemaSet schemaSet;
+    private readonly XmlSchemaSet schemaSet;
 
     private bool isValid = true;
     private string validationMessage;
@@ -33,15 +26,12 @@ public class SomiodMessageHandler : DelegatingHandler
     {
         this.discoverService = discoverService ?? throw new ArgumentNullException(nameof(discoverService));
         this.schemaSet = new XmlSchemaSet();
-        //this.schemaSet.Add("", Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Schemas", "CreateApplication.xsd"));
-        //this.schemaSet.Add("", Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Schemas", "CreateContainer.xsd"));
-        //this.schemaSet.Add("", Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Schemas", "CreateData.xsd"));
-        this.schemaSet.Add("http://www.middleware-d26.com/schemas/CreateSubscription", Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Schemas", "CreateSubscription.xsd"));
+        this.schemaSet.Add("", Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Schemas", "CreateDTO.xsd"));
     }
 
     async protected override Task<HttpResponseMessage> SendAsync(
         HttpRequestMessage request, CancellationToken cancellationToken)
-    {     
+    {
         var requestMethod = request.Method;
 
         switch (requestMethod.Method)
@@ -56,11 +46,11 @@ public class SomiodMessageHandler : DelegatingHandler
                 return await HandleDeleteRequest(request, cancellationToken);
             default:
                 return CreateResponse(HttpStatusCode.BadRequest, "Unknown request method");
-        }        
+        }
     }
 
     private async Task<HttpResponseMessage> HandleGetRequest(HttpRequestMessage request, CancellationToken cancellationToken)
-    {      
+    {
         if (request.Headers.TryGetValues("somiod-discover", out var discoverValues))
         {
             var discoverType = discoverValues.FirstOrDefault();
@@ -68,7 +58,7 @@ public class SomiodMessageHandler : DelegatingHandler
             switch (discoverType)
             {
                 case "application":
-                    var applications = discoverService.GetApplications();
+                    var applications = discoverService.DiscoverApplications();
                     return CreateResponse(HttpStatusCode.OK, applications);
 
                 case "container":
@@ -82,28 +72,32 @@ public class SomiodMessageHandler : DelegatingHandler
                         return CreateResponse(HttpStatusCode.BadRequest, "Application name not specified in the route.");
                     }
 
-                    var containers = discoverService.GetContainers(applicationName);
+                    var containers = discoverService.DiscoverContainers(applicationName);
                     return CreateResponse(HttpStatusCode.OK, containers);
 
                 case "data":
-                    // Extract parent name from route data
                     var routeDataData = request.GetRouteData();
                     var parentNameData = routeDataData.Values["id"] as string;
 
                     if (string.IsNullOrEmpty(parentNameData))
                     {
-                        // Handle the case where parentName is not present in the route data
                         return CreateResponse(HttpStatusCode.BadRequest, "Parent name not specified in the route.");
                     }
 
-                    var dataRecords = discoverService.GetDataRecords(parentNameData);
+                    var dataRecords = discoverService.DiscoverDataRecords(parentNameData, null);
                     return CreateResponse(HttpStatusCode.OK, dataRecords);
 
                 case "subscription":
-                    //var subscription = await request.Content.ReadAsAsync<Subscription>();
-                    // Logic to handle subscription creation
-                    // SetupNotification(subscription);
-                    return CreateResponse(HttpStatusCode.OK, "Subscription created successfully");
+                    var routeDataSubscription = request.GetRouteData();
+                    var parentNameSubscription = routeDataSubscription.Values["id"] as string;
+
+                    if (string.IsNullOrEmpty(parentNameSubscription))
+                    {
+                        return CreateResponse(HttpStatusCode.BadRequest, "Parent name not specified in the route.");
+                    }
+
+                    var subscriptions = discoverService.DiscoverSubscriptions(parentNameSubscription, null);
+                    return CreateResponse(HttpStatusCode.OK, subscriptions);
 
                 default:
                     return CreateResponse(HttpStatusCode.BadRequest, "Unknown discover type");
@@ -111,17 +105,7 @@ public class SomiodMessageHandler : DelegatingHandler
         }
         else
         {
-            // Process the regular HTTP request
-            Debug.WriteLine("Processing regular request");
-
-            // Call the inner handler to continue processing the request
-            var response = await base.SendAsync(request, cancellationToken);
-
-            // Process the response message as needed
-            Debug.WriteLine("Processing response");
-
-            // Return the modified response
-            return response;
+            return await base.SendAsync(request, cancellationToken);
         }
     }
 
@@ -131,12 +115,12 @@ public class SomiodMessageHandler : DelegatingHandler
         var xml = XDocument.Parse(content);
         var resType = xml.Root?.Element("res_type")?.Value;
 
-        if(string.IsNullOrEmpty(resType))
+        if (string.IsNullOrEmpty(resType))
         {
             return CreateResponse(HttpStatusCode.BadRequest, "Res_type not specified");
         }
 
-        ValidateXml(xml, resType);
+        ValidateXml(xml);
         return await base.SendAsync(request, cancellationToken);
     }
 
@@ -158,7 +142,7 @@ public class SomiodMessageHandler : DelegatingHandler
         };
     }
 
-    private bool ValidateXml(XDocument xml, string resType)
+    private bool ValidateXml(XDocument xml)
     {
         isValid = true;
         try

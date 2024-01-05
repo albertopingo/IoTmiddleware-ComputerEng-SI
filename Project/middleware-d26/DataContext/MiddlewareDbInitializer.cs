@@ -1,8 +1,7 @@
 ﻿using middleware_d26.Models;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System;
-using middleware_d26.DataContext;
 
 namespace middleware_d26.DataContext
 {
@@ -91,7 +90,11 @@ namespace middleware_d26.DataContext
         }
         private DateTime GetRandomDateWithinLastNDays(int days)
         {
-            return DateTime.Now.AddDays(-random.Next(1, days + 1));
+            return DateTime.Now
+                .AddDays(-random.Next(1, days + 1))
+                .AddHours(-random.Next(1, 24))
+                .AddMinutes(-random.Next(1, 60))
+                .AddSeconds(-random.Next(1, 60));
         }
     }
 }

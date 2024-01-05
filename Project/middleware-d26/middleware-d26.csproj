@@ -137,6 +137,7 @@
     <Compile Include="App_Start\UnityWebApiActivator.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\ApplicationController.cs" />
+    <Compile Include="Controllers\ResourceController.cs" />
     <Compile Include="Controllers\ContainerController.cs" />
     <Compile Include="Controllers\DataController.cs" />
     <Compile Include="Controllers\SubscriptionController.cs" />
@@ -154,7 +155,7 @@
     <Compile Include="Models\Application.cs" />
     <Compile Include="Models\Container.cs" />
     <Compile Include="Models\Data.cs" />
-    <Compile Include="Models\DTOs\SubscriptionDTO.cs" />
+    <Compile Include="Models\DTOs\CreateDTOs.cs" />
     <Compile Include="Models\Subscription.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
@@ -175,7 +176,7 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="Schemas\CreateSubscription.xsd">
+    <None Include="Schemas\CreateDTO.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Web.Debug.config">

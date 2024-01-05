@@ -1,6 +1,9 @@
+using middleware_d26.DataContext;
+using middleware_d26.Services;
 using System;
 
 using Unity;
+using Unity.Lifetime;
 
 namespace middleware_d26
 {
@@ -10,7 +13,7 @@ namespace middleware_d26
     public static class UnityConfig
     {
         #region Unity Container
-        private static Lazy<IUnityContainer> container =
+        private static readonly Lazy<IUnityContainer> container =
           new Lazy<IUnityContainer>(() =>
           {
               var container = new UnityContainer();
@@ -36,6 +39,13 @@ namespace middleware_d26
         /// </remarks>
         public static void RegisterTypes(IUnityContainer container)
         {
+            container.RegisterType<MiddlewareDbContext>(new HierarchicalLifetimeManager());
+            container.RegisterType<MqttService>(new HierarchicalLifetimeManager());
+            container.RegisterType<DiscoverService>(new HierarchicalLifetimeManager());
+
+            container.RegisterType<ContainerService>(new HierarchicalLifetimeManager());
+            container.RegisterType<SubscriptionService>(new HierarchicalLifetimeManager());
+            container.RegisterType<DataService>(new HierarchicalLifetimeManager());
             // NOTE: To load from web.config uncomment the line below.
             // Make sure to add a Unity.Configuration to the using statements.
             // container.LoadConfiguration();

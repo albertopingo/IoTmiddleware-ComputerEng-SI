@@ -1,6 +1,5 @@
-﻿using System.Net;
+﻿using System;
 using System.Text;
-using System;
 using uPLibrary.Networking.M2Mqtt;
 using uPLibrary.Networking.M2Mqtt.Messages;
 
