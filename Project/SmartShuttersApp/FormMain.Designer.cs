@@ -42,7 +42,7 @@
             // buttonCreateContainer
             // 
             this.buttonCreateContainer.Location = new System.Drawing.Point(419, 23);
-            this.buttonCreateContainer.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.buttonCreateContainer.Margin = new System.Windows.Forms.Padding(2);
             this.buttonCreateContainer.Name = "buttonCreateContainer";
             this.buttonCreateContainer.Size = new System.Drawing.Size(137, 21);
             this.buttonCreateContainer.TabIndex = 1;
@@ -53,7 +53,7 @@
             // buttonCreateSubscription
             // 
             this.buttonCreateSubscription.Location = new System.Drawing.Point(419, 144);
-            this.buttonCreateSubscription.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.buttonCreateSubscription.Margin = new System.Windows.Forms.Padding(2);
             this.buttonCreateSubscription.Name = "buttonCreateSubscription";
             this.buttonCreateSubscription.Size = new System.Drawing.Size(137, 21);
             this.buttonCreateSubscription.TabIndex = 2;
@@ -64,7 +64,7 @@
             // button4
             // 
             this.button4.Location = new System.Drawing.Point(427, 222);
-            this.button4.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button4.Margin = new System.Windows.Forms.Padding(2);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(137, 21);
             this.button4.TabIndex = 3;
@@ -74,11 +74,10 @@
             // textBoxContainerName
             // 
             this.textBoxContainerName.Location = new System.Drawing.Point(249, 29);
-            this.textBoxContainerName.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.textBoxContainerName.Margin = new System.Windows.Forms.Padding(2);
             this.textBoxContainerName.Name = "textBoxContainerName";
             this.textBoxContainerName.Size = new System.Drawing.Size(147, 20);
             this.textBoxContainerName.TabIndex = 4;
-            this.textBoxContainerName.TextChanged += new System.EventHandler(this.textBoxContainerName_TextChanged);
             // 
             // label1
             // 
@@ -113,7 +112,7 @@
             // textBoxEndPoint
             // 
             this.textBoxEndPoint.Location = new System.Drawing.Point(267, 93);
-            this.textBoxEndPoint.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.textBoxEndPoint.Margin = new System.Windows.Forms.Padding(2);
             this.textBoxEndPoint.Name = "textBoxEndPoint";
             this.textBoxEndPoint.Size = new System.Drawing.Size(129, 20);
             this.textBoxEndPoint.TabIndex = 8;
@@ -125,7 +124,7 @@
             "1",
             "2"});
             this.comboBoxEvent.Location = new System.Drawing.Point(450, 92);
-            this.comboBoxEvent.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.comboBoxEvent.Margin = new System.Windows.Forms.Padding(2);
             this.comboBoxEvent.Name = "comboBoxEvent";
             this.comboBoxEvent.Size = new System.Drawing.Size(116, 21);
             this.comboBoxEvent.TabIndex = 9;
@@ -144,9 +143,10 @@
             this.Controls.Add(this.button4);
             this.Controls.Add(this.buttonCreateSubscription);
             this.Controls.Add(this.buttonCreateContainer);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "FormMain";
             this.Text = "FormMain";
+            this.Load += new System.EventHandler(this.FormMain_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

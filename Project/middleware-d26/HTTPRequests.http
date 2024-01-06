@@ -3,7 +3,7 @@
 POST http://localhost:65252/api/somiod
 Content-Type: application/xml
 
-<EntityRequest>
+<EntityRequest xmlns="Middleware-d26">
     <res_type>application</res_type>
     <name>NewApplication3</name>
 </EntityRequest>
@@ -16,7 +16,7 @@ Accept: application/xml
 PUT http://localhost:65252/api/somiod/NewApplication
 Content-Type: application/xml
 
-<EntityRequest>
+<EntityRequest xmlns="Middleware-d26">
     <res_type>application</res_type>
     <name>ModifiedApplication</name>
 </EntityRequest>
@@ -30,7 +30,7 @@ DELETE http://localhost:65252/api/somiod/NewApplication
 POST http://localhost:65252/api/somiod/App1
 Content-Type: application/xml
 
-<EntityRequest>
+<EntityRequest xmlns="Middleware-d26">
     <res_type>container</res_type>
     <name>NewContainer</name>
 </EntityRequest>
@@ -44,7 +44,7 @@ Accept: application/xml
 PUT http://localhost:65252/api/somiod/App1/NewContainer
 Content-Type: application/xml
 
-<EntityRequest>
+<EntityRequest xmlns="Middleware-d26">
     <res_type>container</res_type>
     <name>ModifiedContainer</name>
 </EntityRequest>
@@ -58,7 +58,7 @@ DELETE http://localhost:65252/api/somiod/App1/ModifiedContainer
 POST http://localhost:65252/api/somiod/App1/Container1
 Content-Type: application/xml
 
-<EntityRequest>
+<EntityRequest xmlns="Middleware-d26">
     <res_type>subscription</res_type>
     <subscription>
         <name>NewSubscription</name>
@@ -80,7 +80,7 @@ DELETE http://localhost:65252/api/somiod/App1/Container1/sub/NewSubscription
 POST http://localhost:65252/api/somiod/App1/Container1
 Content-Type: application/xml
 
-<EntityRequest>
+<EntityRequest xmlns="Middleware-d26">
     <res_type>data</res_type>
     <data>
         <name>NewData</name>
