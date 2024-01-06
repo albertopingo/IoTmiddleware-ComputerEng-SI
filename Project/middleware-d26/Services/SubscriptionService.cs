@@ -85,60 +85,61 @@ namespace middleware_d26.Services
             await dbContext.SaveChangesAsync();
         }
 
-       /* public void NotifySubscriptions(string containerName, string eventData, EventType eventType)
-        {
-            try
-            {
-                // Logic to check subscriptions for the corresponding container
-                var subscriptions = dbContext.Subscriptions
-                    .Where(s => s.Parent == containerName && (s.Event == "both" || (eventType == EventType.Creation && s.Event == "creation") || (eventType == EventType.Deletion && s.Event == "deletion")))
-                    .ToList();
+        /* public void NotifySubscriptions(string containerName, string eventData, EventType eventType)
+         {
+             try
+             {
+                 // Logic to check subscriptions for the corresponding container
+                 var subscriptions = dbContext.Subscriptions
+                     .Where(s => s.Parent == containerName && (s.Event == "both" || (eventType == EventType.Creation && s.Event == "creation") || (eventType == EventType.Deletion && s.Event == "deletion")))
+                     .ToList();
 
-                // Logic to send notifications
-                foreach (var subscription in subscriptions)
-                {
-                    SendNotification(eventData, eventType, subscription);
-                }
-            }
-            catch (Exception ex)
-            {
-                // Log the exception
-                Console.WriteLine($"Exception in NotifySubscriptions: {ex.Message}");
-                throw; // Re-throw the exception to maintain the original exception details
-            }
-        }
+                 // Logic to send notifications
+                 foreach (var subscription in subscriptions)
+                 {
+                     SendNotification(eventData, eventType, subscription);
+                 }
+             }
+             catch (Exception ex)
+             {
+                 // Log the exception
+                 Console.WriteLine($"Exception in NotifySubscriptions: {ex.Message}");
+                 throw; // Re-throw the exception to maintain the original exception details
+             }
+         }
 
-        private void SendNotification(string eventData, EventType eventType, Subscription subscription)
-        {
-            // Logic to send notifications to the specified endpoint
+         private void SendNotification(string eventData, EventType eventType, Subscription subscription)
+         {
+             // Logic to send notifications to the specified endpoint
 
-            if (subscription.Endpoint.StartsWith("http"))
-            {
-                // For HTTP
-                using (var httpClient = new HttpClient())
-                {
-                    var notificationContent = CreateNotificationContent(eventData, eventType);
-                    httpClient.PostAsync(subscription.Endpoint, new StringContent(notificationContent, Encoding.UTF8, "application/json")).Wait();
-                }
-            }
-            else if (subscription.Endpoint.StartsWith("mqtt"))
-            {
-                // For MQTT
-                using (var mqttClient = new MqttClient(subscription.Endpoint))
-                {
-                    mqttClient.Connect(Guid.NewGuid().ToString());
+             if (subscription.Endpoint.StartsWith("http"))
+             {
+                 // For HTTP
+                 using (var httpClient = new HttpClient())
+                 {
+                     var notificationContent = CreateNotificationContent(eventData, eventType);
+                     httpClient.PostAsync(subscription.Endpoint, new StringContent(notificationContent, Encoding.UTF8, "application/json")).Wait();
+                 }
+             }
+             else if (subscription.Endpoint.StartsWith("mqtt"))
+             {
+                 // For MQTT
+                 using (var mqttClient = new MqttClient(subscription.Endpoint))
+                 {
+                     mqttClient.Connect(Guid.NewGuid().ToString());
 
-                    var channelName = $"api/somiod/{subscription.Application}/{subscription.Container}";
-                    var notificationContent = CreateNotificationContent(eventData, eventType);
-                    mqttClient.Publish(channelName, Encoding.UTF8.GetBytes(notificationContent), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
-                }
-            }
-        }
+                     var channelName = $"api/somiod/{subscription.Application}/{subscription.Container}";
+                     var notificationContent = CreateNotificationContent(eventData, eventType);
+                     mqttClient.Publish(channelName, Encoding.UTF8.GetBytes(notificationContent), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
+                 }
+             }
+         }
 
-        private string CreateNotificationContent(string eventData, EventType eventType)
-        {
-            // Create the content of the notification including data resource and event type
-            return $"{{ \"event\": \"{eventType}\", \"data\": {eventData} }}";
-        }
-    */
+         private string CreateNotificationContent(string eventData, EventType eventType)
+         {
+             // Create the content of the notification including data resource and event type
+             return $"{{ \"event\": \"{eventType}\", \"data\": {eventData} }}";
+         }
+     */
+    }
 }
