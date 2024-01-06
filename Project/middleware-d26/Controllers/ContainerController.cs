@@ -1,9 +1,10 @@
-﻿using System.Web.Http;
-using middleware_d26.Models.DTOs;
+﻿using middleware_d26.Models.DTOs;
 using middleware_d26.Services;
 using System;
+using System.Diagnostics;
 using System.Net;
 using System.Threading.Tasks;
+using System.Web.Http;
 
 namespace middleware_d26.Controllers.Container
 {
@@ -27,7 +28,7 @@ namespace middleware_d26.Controllers.Container
         {
             if (createDTO == null || createDTO.ResType.ToLower() != "container")
             {
-                return BadRequest("Invalid or missing res_type");
+                return BadRequest("Invalid or missing res_type (Container)");
             }
 
             if (string.IsNullOrWhiteSpace(createDTO.Name))
@@ -72,7 +73,10 @@ namespace middleware_d26.Controllers.Container
         {
             if (modifyDTO == null || modifyDTO.ResType.ToLower() != "container")
             {
-                return BadRequest("Invalid or missing res_type");
+                Debug.WriteLine("Res: ");
+                Debug.Write(modifyDTO.ResType);
+                Debug.WriteLine("modifyDTO: " + modifyDTO);
+                return BadRequest("Invalid or missing res_type (Container)");
             }
 
             if (string.IsNullOrWhiteSpace(modifyDTO.Name))

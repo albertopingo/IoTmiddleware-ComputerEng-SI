@@ -75,7 +75,7 @@ namespace middleware_d26.Controllers.Application
         {
             if (modifyDTO == null || modifyDTO.ResType.ToLower() != "application")
             {
-                return BadRequest("Invalid or missing res_type");
+                return BadRequest("Invalid or missing res_type (App)");
             }
 
             if (string.IsNullOrWhiteSpace(modifyDTO.Name))

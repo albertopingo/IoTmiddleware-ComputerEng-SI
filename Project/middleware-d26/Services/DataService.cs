@@ -24,6 +24,12 @@ namespace middleware_d26.Services
             var parentContainer = dbContext.Containers.FirstOrDefault(c => c.Name == containerName && c.Parent == parentApplication.Id)
                 ?? throw new Exception("Parent container not found");
 
+            if (dbContext.DataRecords.Any(d =>
+                           d.Parent == parentContainer.Id && d.Name == dataDTO.Name))
+            {
+                throw new Exception("Data already exists");
+            }
+
             var data = new Data
             {
                 Content = dataDTO.Content,

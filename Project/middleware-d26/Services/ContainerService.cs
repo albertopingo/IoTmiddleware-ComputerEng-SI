@@ -54,7 +54,7 @@ namespace middleware_d26.Services
                 ?? throw new Exception("Parent application not found");
 
             if (dbContext.Containers.Any(c =>
-                c.Parent == parentApplication.Id && c.Name == containerName))
+                c.Parent == parentApplication.Id && c.Name == newContainerName))
             {
                 throw new Exception("Container already exists");
             }
