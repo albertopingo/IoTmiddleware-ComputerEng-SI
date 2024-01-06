@@ -149,6 +149,8 @@ namespace SmartShuttersApp
         private void buttonSubscribe_Click(object sender, EventArgs e)
         {
             MqttClient mClient = new MqttClient(IPAddress.Parse(textBoxEndPoint.Text));
+            string containerName = textBoxContainerName.Text;
+            string[] mStrTopicsInfo = { $"SmartShutters/{containerName}"};
             mClient.Connect(Guid.NewGuid().ToString());
             if (!mClient.IsConnected)
             {
@@ -159,6 +161,10 @@ namespace SmartShuttersApp
             //New Msg Arrived
             mClient.MqttMsgPublishReceived += client_MqttMsgPublishReceived;
             mClient.MqttMsgSubscribed += client_MqttMsgSubscribed;
+
+            byte[] qosLevels = { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE,
+            MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE};//QoS
+            mClient.Subscribe(mStrTopicsInfo, qosLevels);
         }
         static void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
         {
@@ -167,11 +173,6 @@ namespace SmartShuttersApp
         void client_MqttMsgSubscribed(object sender, MqttMsgSubscribedEventArgs e)
         {
         MessageBox.Show("SUBSCRIBED WITH SUCCESS");
-        }
-
-        private void FormMain_Load(object sender, EventArgs e)
-        {
-
         }
     }
 }
