@@ -40,6 +40,10 @@ namespace middleware_d26.Services
 
             var topic = $"{applicationName}/{containerName}";
 
+            /* // Call NotifySubscriptions to trigger notifications
+            var eventType = EventType.Creation;
+            notificationService.NotifySubscriptions(containerName, newData, eventType); */
+
             using (var mqttService = new MqttService(subscription.Endpoint))
             {
                 mqttService.PublishMessage(topic, dataDTO.Content);
@@ -76,6 +80,10 @@ namespace middleware_d26.Services
 
             dbContext.DataRecords.Remove(data);
             await dbContext.SaveChangesAsync();
+
+           /* // Call NotifySubscriptions to trigger notifications
+            var eventType = EventType.Deletion;
+            notificationService.NotifySubscriptions(containerName, dataName, eventType); */
         }
     }
 }
