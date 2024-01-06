@@ -20,11 +20,11 @@ namespace middleware_d26.Controllers
 
         [HttpGet]
         [Route("{applicationName}/{containerName}/data/{dataName}")]
-        public async Task<IHttpActionResult> GetData(string applicationName, string containerName, string dataName)
+        public IHttpActionResult GetData(string applicationName, string containerName, string dataName)
         {
             try
             {
-                var data = await dataService.GetData(applicationName, containerName, dataName);
+                var data = dataService.GetData(applicationName, containerName, dataName);
                 return Ok(data);
             }
             catch (Exception ex)

@@ -43,6 +43,7 @@ namespace middleware_d26
             container.RegisterType<MqttService>(new HierarchicalLifetimeManager());
             container.RegisterType<DiscoverService>(new HierarchicalLifetimeManager());
 
+            container.RegisterType<ApplicationService>(new HierarchicalLifetimeManager());
             container.RegisterType<ContainerService>(new HierarchicalLifetimeManager());
             container.RegisterType<SubscriptionService>(new HierarchicalLifetimeManager());
             container.RegisterType<DataService>(new HierarchicalLifetimeManager());

@@ -1,5 +1,6 @@
 ﻿using middleware_d26.Services;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -26,7 +27,7 @@ public class SomiodMessageHandler : DelegatingHandler
     {
         this.discoverService = discoverService ?? throw new ArgumentNullException(nameof(discoverService));
         this.schemaSet = new XmlSchemaSet();
-        this.schemaSet.Add("", Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Schemas", "CreateDTO.xsd"));
+        this.schemaSet.Add("Middleware-d26", Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Schemas", "EntityRequestSchema.xsd"));
     }
 
     async protected override Task<HttpResponseMessage> SendAsync(
@@ -39,11 +40,11 @@ public class SomiodMessageHandler : DelegatingHandler
             case "GET":
                 return await HandleGetRequest(request, cancellationToken);
             case "POST":
-                return await HandlePostRequest(request, cancellationToken);
+                return await HandleReceivedContent(request, cancellationToken);
             case "PUT":
-                return await HandlePutRequest(request, cancellationToken);
+                return await HandleReceivedContent(request, cancellationToken);
             case "DELETE":
-                return await HandleDeleteRequest(request, cancellationToken);
+                return await base.SendAsync(request, cancellationToken);
             default:
                 return CreateResponse(HttpStatusCode.BadRequest, "Unknown request method");
         }
@@ -51,6 +52,23 @@ public class SomiodMessageHandler : DelegatingHandler
 
     private async Task<HttpResponseMessage> HandleGetRequest(HttpRequestMessage request, CancellationToken cancellationToken)
     {
+        var routeData = request.GetRouteData();
+        var applicationName = routeData.Values["applicationName"] as string;
+        var containerName = routeData.Values["containerName"] as string;
+        Debug.WriteLine($"Route data: {routeData}");
+        Debug.WriteLine($"Application name: {applicationName}");
+        Debug.WriteLine($"Container name: {containerName}");
+        Debug.WriteLine($"Request URI: {request.RequestUri}");
+
+        // Check header -> Accept = application/xml
+        var acceptHeader = request.Headers.Accept.FirstOrDefault();
+
+        if (acceptHeader == null || !acceptHeader.MediaType.Equals("application/xml", StringComparison.OrdinalIgnoreCase))
+        {
+            return CreateResponse(HttpStatusCode.UnsupportedMediaType, "Unsupported media type");
+        }
+
+        // Check header -> somiod-discover = application|container|data|subscription
         if (request.Headers.TryGetValues("somiod-discover", out var discoverValues))
         {
             var discoverType = discoverValues.FirstOrDefault();
@@ -61,10 +79,8 @@ public class SomiodMessageHandler : DelegatingHandler
                     var applications = discoverService.DiscoverApplications();
                     return CreateResponse(HttpStatusCode.OK, applications);
 
-                case "container":
-                    // Extract application name from route data
-                    var routeData = request.GetRouteData();
-                    var applicationName = routeData.Values["id"] as string;
+                case "container":                    
+                    Debug.WriteLine($"Application name: {applicationName}");
 
                     if (string.IsNullOrEmpty(applicationName))
                     {
@@ -75,28 +91,22 @@ public class SomiodMessageHandler : DelegatingHandler
                     var containers = discoverService.DiscoverContainers(applicationName);
                     return CreateResponse(HttpStatusCode.OK, containers);
 
-                case "data":
-                    var routeDataData = request.GetRouteData();
-                    var parentNameData = routeDataData.Values["id"] as string;
-
-                    if (string.IsNullOrEmpty(parentNameData))
+                case "data":         
+                    if (string.IsNullOrEmpty(containerName))
                     {
                         return CreateResponse(HttpStatusCode.BadRequest, "Parent name not specified in the route.");
                     }
 
-                    var dataRecords = discoverService.DiscoverDataRecords(parentNameData, null);
+                    var dataRecords = discoverService.DiscoverDataRecords(applicationName, containerName);
                     return CreateResponse(HttpStatusCode.OK, dataRecords);
 
                 case "subscription":
-                    var routeDataSubscription = request.GetRouteData();
-                    var parentNameSubscription = routeDataSubscription.Values["id"] as string;
-
-                    if (string.IsNullOrEmpty(parentNameSubscription))
+                    if (string.IsNullOrEmpty(containerName))
                     {
                         return CreateResponse(HttpStatusCode.BadRequest, "Parent name not specified in the route.");
                     }
 
-                    var subscriptions = discoverService.DiscoverSubscriptions(parentNameSubscription, null);
+                    var subscriptions = discoverService.DiscoverSubscriptions(applicationName, containerName);
                     return CreateResponse(HttpStatusCode.OK, subscriptions);
 
                 default:
@@ -109,30 +119,37 @@ public class SomiodMessageHandler : DelegatingHandler
         }
     }
 
-    private async Task<HttpResponseMessage> HandlePostRequest(HttpRequestMessage request, CancellationToken cancellationToken)
+    private async Task<HttpResponseMessage> HandleReceivedContent(HttpRequestMessage request, CancellationToken cancellationToken)
     {
+        // Check header -> accept = application/xml
+        var contentType = request.Content.Headers.ContentType?.MediaType;
+
+        if (string.IsNullOrEmpty(contentType) || !contentType.Equals("application/xml", StringComparison.OrdinalIgnoreCase))
+        {
+            return CreateResponse(HttpStatusCode.UnsupportedMediaType, "Unsupported media type");
+        }
+
         var content = await request.Content.ReadAsStringAsync();
+
+        // Log received XML content
+        Debug.WriteLine($"Received XML content:\n{content}");
+
         var xml = XDocument.Parse(content);
-        var resType = xml.Root?.Element("res_type")?.Value;
+        var resTypeElement = xml.Root?.Element("res_type");
+
+        // Log extracted ResType
+        var resType = resTypeElement?.Value;
+        Debug.WriteLine($"Extracted ResType: {resType}");
 
         if (string.IsNullOrEmpty(resType))
         {
-            return CreateResponse(HttpStatusCode.BadRequest, "Res_type not specified");
+            return CreateResponse(HttpStatusCode.BadRequest, "res_type not specified");
         }
 
         ValidateXml(xml);
         return await base.SendAsync(request, cancellationToken);
     }
 
-    private async Task<HttpResponseMessage> HandlePutRequest(HttpRequestMessage request, CancellationToken cancellationToken)
-    {
-        return await base.SendAsync(request, cancellationToken);
-    }
-
-    private async Task<HttpResponseMessage> HandleDeleteRequest(HttpRequestMessage request, CancellationToken cancellationToken)
-    {
-        return await base.SendAsync(request, cancellationToken);
-    }
 
     private HttpResponseMessage CreateResponse(HttpStatusCode statusCode, object content)
     {
@@ -144,7 +161,6 @@ public class SomiodMessageHandler : DelegatingHandler
 
     private bool ValidateXml(XDocument xml)
     {
-        isValid = true;
         try
         {
             ValidationEventHandler eventHandler = new ValidationEventHandler(ValidateMethod);

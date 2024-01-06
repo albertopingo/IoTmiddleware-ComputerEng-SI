@@ -20,11 +20,11 @@ namespace middleware_d26.Controllers
 
         [HttpGet]
         [Route("{applicationName}/{containerName}/sub/{subscriptionName}")] // No conflicts
-        public async Task<IHttpActionResult> GetSubscription(string applicationName, string containerName, string subscriptionName)
+        public IHttpActionResult GetSubscription(string applicationName, string containerName, string subscriptionName)
         {
             try
             {
-                var subscription = await subscriptionService.GetSubscription(applicationName, containerName, subscriptionName);
+                var subscription = subscriptionService.GetSubscription(applicationName, containerName, subscriptionName);
                 return Ok(subscription);
             }
             catch (Exception ex)

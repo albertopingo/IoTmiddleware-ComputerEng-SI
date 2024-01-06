@@ -3,8 +3,8 @@ using System.Xml.Serialization;
 
 namespace middleware_d26.Models.DTOs
 {
-    [XmlRoot("CreateDTO")]
-    public class CreateDTO
+    [XmlRoot("EntityRequest")]
+    public class EntityRequestDTO
     {
         [XmlElement("res_type")]
         [Required]
@@ -23,26 +23,21 @@ namespace middleware_d26.Models.DTOs
     public class SubscriptionDTO
     {
         [XmlElement("event")]
-        [Required]
         public string Event { get; set; }
 
         [XmlElement("endpoint")]
-        [Required]
         public string Endpoint { get; set; }
 
         [XmlElement("name")]
-        [Required]
         public string Name { get; set; }
     }
 
     public class DataDTO
     {
         [XmlElement("content")]
-        [Required]
         public string Content { get; set; }
 
         [XmlElement("name")]
-        [Required]
         public string Name { get; set; }
     }
 }

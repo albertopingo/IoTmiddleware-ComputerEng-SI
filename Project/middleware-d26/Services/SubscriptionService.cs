@@ -40,6 +40,7 @@ namespace middleware_d26.Services
             var subscription = new Subscription
             {
                 Name = subscriptionDTO.Name,
+                Creation_Dt = DateTime.Now,
                 Endpoint = subscriptionDTO.Endpoint,
                 Event = subscriptionDTO.Event,
                 Parent = parentContainer.Id
@@ -49,7 +50,7 @@ namespace middleware_d26.Services
         }
 
 
-        internal Task<object> GetSubscription(string applicationName, string containerName, string subscriptionName)
+        internal Subscription GetSubscription(string applicationName, string containerName, string subscriptionName)
         {
             var parentApplication = dbContext.Applications.FirstOrDefault(a => a.Name == applicationName)
                 ?? throw new Exception("Parent application not found");
@@ -63,7 +64,7 @@ namespace middleware_d26.Services
                            s.Parent == parentContainer.Id && s.Name == subscriptionName)
                 ?? throw new Exception("Subscription not found");
 
-            return Task.FromResult<object>(subscription);
+            return subscription;
         }
 
 

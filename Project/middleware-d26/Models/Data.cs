@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace middleware_d26.Models
 {
+    [Serializable]
     public class Data
     {
         [Key]

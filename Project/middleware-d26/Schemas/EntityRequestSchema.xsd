@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema
+    id="EntityRequest"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="Middleware-d26"
+    xmlns:tns="Middleware-d26"
+    elementFormDefault="qualified">
+
+	<!-- Definition for SubscriptionDTO -->
+	<xs:complexType name="SubscriptionDTO">
+		<xs:sequence>
+			<xs:element name="event" type="xs:string"/>
+			<xs:element name="endpoint" type="xs:string"/>
+			<xs:element name="name" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<!-- Definition for DataDTO -->
+	<xs:complexType name="DataDTO">
+		<xs:sequence>
+			<xs:element name="content" type="xs:string"/>
+			<xs:element name="name" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<!-- Definition for EntityRequest -->
+	<xs:element name="EntityRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="res_type" type="xs:string"/>
+				<xs:element name="name" type="xs:string" minOccurs="0"/>
+				<xs:element name="subscription" type="tns:SubscriptionDTO" minOccurs="0"/>
+				<xs:element name="data" type="tns:DataDTO" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

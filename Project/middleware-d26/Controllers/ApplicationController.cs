@@ -5,7 +5,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 
-namespace middleware_d26.Controllers
+namespace middleware_d26.Controllers.Application
 {
     [RoutePrefix("api/somiod")]
     public class ApplicationController : ApiController
@@ -20,13 +20,14 @@ namespace middleware_d26.Controllers
         {
         }
 
-        [HttpPost]
+
         [Route("")]
-        public async Task<IHttpActionResult> CreateApplication([FromBody] CreateDTO createDTO)
+        [HttpPost]
+        public async Task<IHttpActionResult> CreateApplication([FromBody] EntityRequestDTO createDTO)
         {
             if (createDTO == null || createDTO.ResType.ToLower() != "application")
             {
-                return BadRequest("Invalid or missing res_type");
+                return BadRequest($"Invalid or missing res_type: {createDTO?.ResType}");
             }
 
             if (string.IsNullOrWhiteSpace(createDTO.Name))
@@ -45,8 +46,10 @@ namespace middleware_d26.Controllers
             }
         }
 
-        [HttpGet]
+
         [Route("{applicationName}")]
+        [HttpGet]
+        [ActionName("GetApplication")]
         public IHttpActionResult GetApplication(string applicationName)
         {
             try
@@ -56,7 +59,6 @@ namespace middleware_d26.Controllers
                 {
                     return Content(HttpStatusCode.NotFound, "Application not found");
                 }
-
                 return Ok(application);
             }
             catch (Exception ex)
@@ -65,13 +67,25 @@ namespace middleware_d26.Controllers
             }
         }
 
-        [HttpPut]
+
+
         [Route("{applicationName}")]
-        public async Task<IHttpActionResult> ModifyApplication(string applicationName, string newApplicationName)
+        [HttpPut]
+        public async Task<IHttpActionResult> ModifyApplication(string applicationName, [FromBody] EntityRequestDTO modifyDTO)
         {
+            if (modifyDTO == null || modifyDTO.ResType.ToLower() != "application")
+            {
+                return BadRequest("Invalid or missing res_type");
+            }
+
+            if (string.IsNullOrWhiteSpace(modifyDTO.Name))
+            {
+                return BadRequest("New application name required");
+            }
+
             try
             {
-                await applicationService.UpdateApplication(applicationName, newApplicationName);
+                await applicationService.UpdateApplication(applicationName, modifyDTO.Name);
                 return Ok();
             }
             catch (Exception ex)
@@ -79,8 +93,10 @@ namespace middleware_d26.Controllers
                 return InternalServerError(ex);
             }
         }
-        [HttpDelete]
+
+
         [Route("{applicationName}")]
+        [HttpDelete]
         public async Task<IHttpActionResult> DeleteApplication(string applicationName)
         {
             try

@@ -6,7 +6,7 @@ using System.Web.Http;
 
 namespace middleware_d26.Controllers
 {
-    [RoutePrefix("api/somiod")]
+    [RoutePrefix("api/somiod/{applicationName}/{containerName}")]
     public class ResourceController : ApiController
     {
         private readonly SubscriptionService subscriptionService;
@@ -18,9 +18,9 @@ namespace middleware_d26.Controllers
             this.dataService = dataService ?? throw new ArgumentNullException(nameof(dataService));
         }
 
+        [Route]
         [HttpPost]
-        [Route("{applicationName}/{containerName}")]
-        public async Task<IHttpActionResult> CreateResource(string applicationName, string containerName, [FromBody] CreateDTO createDTO)
+        public async Task<IHttpActionResult> CreateResource(string applicationName, string containerName, [FromBody] EntityRequestDTO createDTO)
         {
             if (createDTO == null || string.IsNullOrEmpty(createDTO.ResType))
             {

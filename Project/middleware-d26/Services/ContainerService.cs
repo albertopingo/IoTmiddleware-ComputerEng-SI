@@ -37,7 +37,7 @@ namespace middleware_d26.Services
             await dbContext.SaveChangesAsync();
         }
 
-        public Task<Container> GetContainer(string applicationName, string containerName)
+        public Container GetContainer(string applicationName, string containerName)
         {
             var parentApplication = dbContext.Applications.FirstOrDefault(a => a.Name == applicationName)
                 ?? throw new Exception("Parent application not found");
@@ -45,7 +45,7 @@ namespace middleware_d26.Services
             var container = dbContext.Containers.FirstOrDefault(c =>
                 c.Parent == parentApplication.Id && c.Name == containerName);
 
-            return Task.FromResult(container);
+            return container;
         }
 
         public async Task UpdateContainer(string applicationName, string containerName, string newContainerName)

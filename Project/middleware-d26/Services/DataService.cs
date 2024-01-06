@@ -35,22 +35,18 @@ namespace middleware_d26.Services
             dbContext.DataRecords.Add(data);
             await dbContext.SaveChangesAsync();
 
-            var subscription = dbContext.Subscriptions.FirstOrDefault(s => s.Parent == parentContainer.Id)
-                ?? throw new Exception("Subscription not found");
+            //var subscription = dbContext.Subscriptions.FirstOrDefault(s => s.Parent == parentContainer.Id)
+            //    ?? throw new Exception("Subscription not found");
 
-            var topic = $"{applicationName}/{containerName}";
+            //var topic = $"{applicationName}/{containerName}";
 
-            /* // Call NotifySubscriptions to trigger notifications
-            var eventType = EventType.Creation;
-            notificationService.NotifySubscriptions(containerName, newData, eventType); */
-
-            using (var mqttService = new MqttService(subscription.Endpoint))
-            {
-                mqttService.PublishMessage(topic, dataDTO.Content);
-            }
+            //using (var mqttService = new MqttService(subscription.Endpoint))
+            //{
+            //    mqttService.PublishMessage(topic, dataDTO.Content);
+            //}
         }
 
-        internal Task<object> GetData(string applicationName, string containerName, string dataName)
+        internal Data GetData(string applicationName, string containerName, string dataName)
         {
             var parentApplication = dbContext.Applications.FirstOrDefault(a => a.Name == applicationName)
                 ?? throw new Exception("Parent application not found");
@@ -60,10 +56,10 @@ namespace middleware_d26.Services
                 ?? throw new Exception("Parent container not found");
 
             var data = dbContext.DataRecords.FirstOrDefault(d =>
-                           d.Parent == parentContainer.Id && d.Content == dataName)
+                           d.Parent == parentContainer.Id && d.Name == dataName)
                 ?? throw new Exception("Data not found");
 
-            return Task.FromResult<object>(data);
+            return data;
         }
 
         public async Task DeleteData(string applicationName, string containerName, string dataName)
@@ -80,10 +76,6 @@ namespace middleware_d26.Services
 
             dbContext.DataRecords.Remove(data);
             await dbContext.SaveChangesAsync();
-
-           /* // Call NotifySubscriptions to trigger notifications
-            var eventType = EventType.Deletion;
-            notificationService.NotifySubscriptions(containerName, dataName, eventType); */
         }
     }
 }

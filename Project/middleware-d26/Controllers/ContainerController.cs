@@ -1,13 +1,13 @@
-﻿using middleware_d26.Models.DTOs;
+﻿using System.Web.Http;
+using middleware_d26.Models.DTOs;
 using middleware_d26.Services;
 using System;
 using System.Net;
 using System.Threading.Tasks;
-using System.Web.Http;
 
-namespace middleware_d26.Controllers
+namespace middleware_d26.Controllers.Container
 {
-    [RoutePrefix("api/somiod")]
+    [RoutePrefix("api/somiod/{applicationName:regex([a-zA-Z0-9]+)}")]
     public class ContainerController : ApiController
     {
         private readonly ContainerService containerService;
@@ -21,9 +21,9 @@ namespace middleware_d26.Controllers
         {
         }
 
+        [Route("")]
         [HttpPost]
-        [Route("{applicationName}")]
-        public async Task<IHttpActionResult> CreateContainer(string applicationName, [FromBody] CreateDTO createDTO)
+        public async Task<IHttpActionResult> CreateContainer(string applicationName, [FromBody] EntityRequestDTO createDTO)
         {
             if (createDTO == null || createDTO.ResType.ToLower() != "container")
             {
@@ -46,8 +46,8 @@ namespace middleware_d26.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("{applicationName}/{containerName}")]
+        [Route("{containerName}")]
+        [HttpGet]        
         public IHttpActionResult GetContainer(string applicationName, string containerName)
         {
             try
@@ -66,13 +66,23 @@ namespace middleware_d26.Controllers
             }
         }
 
+        [Route("{containerName}")]
         [HttpPut]
-        [Route("{applicationName}/{containerName}")]
-        public async Task<IHttpActionResult> ModifyContainer(string applicationName, string containerName, string newContainerName)
+        public async Task<IHttpActionResult> ModifyContainer(string applicationName, string containerName, [FromBody] EntityRequestDTO modifyDTO)
         {
+            if (modifyDTO == null || modifyDTO.ResType.ToLower() != "container")
+            {
+                return BadRequest("Invalid or missing res_type");
+            }
+
+            if (string.IsNullOrWhiteSpace(modifyDTO.Name))
+            {
+                return BadRequest("Container name required");
+            }
+
             try
             {
-                await containerService.UpdateContainer(applicationName, containerName, newContainerName);
+                await containerService.UpdateContainer(applicationName, containerName, modifyDTO.Name);
                 return Ok();
             }
             catch (Exception ex)
@@ -81,8 +91,8 @@ namespace middleware_d26.Controllers
             }
         }
 
+        [Route("{containerName}")]
         [HttpDelete]
-        [Route("{applicationName}/{containerName}")]
         public async Task<IHttpActionResult> DeleteContainer(string applicationName, string containerName)
         {
             try
