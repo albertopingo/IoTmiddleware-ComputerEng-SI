@@ -30,13 +30,15 @@
         {
             this.buttonCreateContainer = new System.Windows.Forms.Button();
             this.buttonCreateSubscription = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
+            this.buttonSubscribe = new System.Windows.Forms.Button();
             this.textBoxContainerName = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.textBoxEndPoint = new System.Windows.Forms.TextBox();
             this.comboBoxEvent = new System.Windows.Forms.ComboBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.textBoxSubscriptionName = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // buttonCreateContainer
@@ -61,15 +63,15 @@
             this.buttonCreateSubscription.UseVisualStyleBackColor = true;
             this.buttonCreateSubscription.Click += new System.EventHandler(this.buttonCreateSubscription_Click);
             // 
-            // button4
+            // buttonSubscribe
             // 
-            this.button4.Location = new System.Drawing.Point(427, 222);
-            this.button4.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(137, 21);
-            this.button4.TabIndex = 3;
-            this.button4.Text = "button4";
-            this.button4.UseVisualStyleBackColor = true;
+            this.buttonSubscribe.Location = new System.Drawing.Point(768, 345);
+            this.buttonSubscribe.Name = "buttonSubscribe";
+            this.buttonSubscribe.Size = new System.Drawing.Size(251, 39);
+            this.buttonSubscribe.TabIndex = 3;
+            this.buttonSubscribe.Text = "Subscribe";
+            this.buttonSubscribe.UseVisualStyleBackColor = true;
+            this.buttonSubscribe.Click += new System.EventHandler(this.buttonSubscribe_Click);
             // 
             // textBoxContainerName
             // 
@@ -93,8 +95,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(305, 62);
-            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label2.Location = new System.Drawing.Point(632, 114);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(50, 13);
             this.label2.TabIndex = 6;
@@ -112,8 +113,7 @@
             // 
             // textBoxEndPoint
             // 
-            this.textBoxEndPoint.Location = new System.Drawing.Point(267, 93);
-            this.textBoxEndPoint.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.textBoxEndPoint.Location = new System.Drawing.Point(554, 169);
             this.textBoxEndPoint.Name = "textBoxEndPoint";
             this.textBoxEndPoint.Size = new System.Drawing.Size(129, 20);
             this.textBoxEndPoint.TabIndex = 8;
@@ -130,18 +130,36 @@
             this.comboBoxEvent.Size = new System.Drawing.Size(116, 21);
             this.comboBoxEvent.TabIndex = 9;
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(312, 114);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(190, 25);
+            this.label4.TabIndex = 10;
+            this.label4.Text = "Nome da subscrição";
+            // 
+            // textBoxSubscriptionName
+            // 
+            this.textBoxSubscriptionName.Location = new System.Drawing.Point(277, 169);
+            this.textBoxSubscriptionName.Name = "textBoxSubscriptionName";
+            this.textBoxSubscriptionName.Size = new System.Drawing.Size(234, 29);
+            this.textBoxSubscriptionName.TabIndex = 11;
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(581, 298);
+            this.ClientSize = new System.Drawing.Size(1066, 551);
+            this.Controls.Add(this.textBoxSubscriptionName);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.comboBoxEvent);
             this.Controls.Add(this.textBoxEndPoint);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.textBoxContainerName);
-            this.Controls.Add(this.button4);
+            this.Controls.Add(this.buttonSubscribe);
             this.Controls.Add(this.buttonCreateSubscription);
             this.Controls.Add(this.buttonCreateContainer);
             this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
@@ -155,12 +173,14 @@
         #endregion
         private System.Windows.Forms.Button buttonCreateContainer;
         private System.Windows.Forms.Button buttonCreateSubscription;
-        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button buttonSubscribe;
         private System.Windows.Forms.TextBox textBoxContainerName;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox textBoxEndPoint;
         private System.Windows.Forms.ComboBox comboBoxEvent;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox textBoxSubscriptionName;
     }
 }
