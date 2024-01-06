@@ -79,7 +79,7 @@ public class SomiodMessageHandler : DelegatingHandler
                     var applications = discoverService.DiscoverApplications();
                     return CreateResponse(HttpStatusCode.OK, applications);
 
-                case "container":                    
+                case "container":
                     Debug.WriteLine($"Application name: {applicationName}");
 
                     if (string.IsNullOrEmpty(applicationName))
@@ -91,7 +91,7 @@ public class SomiodMessageHandler : DelegatingHandler
                     var containers = discoverService.DiscoverContainers(applicationName);
                     return CreateResponse(HttpStatusCode.OK, containers);
 
-                case "data":         
+                case "data":
                     if (string.IsNullOrEmpty(containerName))
                     {
                         return CreateResponse(HttpStatusCode.BadRequest, "Parent name not specified in the route.");
@@ -135,7 +135,8 @@ public class SomiodMessageHandler : DelegatingHandler
         Debug.WriteLine($"Received XML content:\n{content}");
 
         var xml = XDocument.Parse(content);
-        var resTypeElement = xml.Root?.Element("res_type");
+        XNamespace ns = "Middleware-d26";
+        var resTypeElement = xml.Descendants(ns + "res_type").FirstOrDefault();
 
         // Log extracted ResType
         var resType = resTypeElement?.Value;
@@ -147,9 +148,14 @@ public class SomiodMessageHandler : DelegatingHandler
         }
 
         ValidateXml(xml);
+        if (!isValid)
+        {
+            return CreateResponse(HttpStatusCode.BadRequest, validationMessage);
+        }
+
+        // Properly await the SendAsync method
         return await base.SendAsync(request, cancellationToken);
     }
-
 
     private HttpResponseMessage CreateResponse(HttpStatusCode statusCode, object content)
     {
@@ -161,6 +167,7 @@ public class SomiodMessageHandler : DelegatingHandler
 
     private bool ValidateXml(XDocument xml)
     {
+        isValid = true;
         try
         {
             ValidationEventHandler eventHandler = new ValidationEventHandler(ValidateMethod);
@@ -170,6 +177,7 @@ public class SomiodMessageHandler : DelegatingHandler
         {
             isValid = false;
             validationMessage = string.Format("ERROR: {0}", ex.ToString());
+            Debug.WriteLine("ValidateXML" + validationMessage);
         }
 
         return isValid;
@@ -182,9 +190,11 @@ public class SomiodMessageHandler : DelegatingHandler
         {
             case XmlSeverityType.Error:
                 validationMessage = string.Format("ERROR: {0}", args.Message);
+                Debug.WriteLine("ValidateMethod" + validationMessage);
                 break;
             case XmlSeverityType.Warning:
                 validationMessage = string.Format("WARNING: {0}", args.Message);
+                Debug.WriteLine("ValidateMethod2" + validationMessage);
                 break;
             default:
                 break;

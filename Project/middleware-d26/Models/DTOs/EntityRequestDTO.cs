@@ -3,11 +3,10 @@ using System.Xml.Serialization;
 
 namespace middleware_d26.Models.DTOs
 {
-    [XmlRoot("EntityRequest")]
+    [XmlRoot("EntityRequest", Namespace = "Middleware-d26")]
     public class EntityRequestDTO
     {
         [XmlElement("res_type")]
-        [Required]
         public string ResType { get; set; }
 
         [XmlElement("name")]

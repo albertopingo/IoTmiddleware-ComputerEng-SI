@@ -43,9 +43,10 @@
             // 
             // buttonCreateContainer
             // 
-            this.buttonCreateContainer.Location = new System.Drawing.Point(768, 43);
+            this.buttonCreateContainer.Location = new System.Drawing.Point(419, 23);
+            this.buttonCreateContainer.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.buttonCreateContainer.Name = "buttonCreateContainer";
-            this.buttonCreateContainer.Size = new System.Drawing.Size(251, 39);
+            this.buttonCreateContainer.Size = new System.Drawing.Size(137, 21);
             this.buttonCreateContainer.TabIndex = 1;
             this.buttonCreateContainer.Text = "Create Container";
             this.buttonCreateContainer.UseVisualStyleBackColor = true;
@@ -53,9 +54,10 @@
             // 
             // buttonCreateSubscription
             // 
-            this.buttonCreateSubscription.Location = new System.Drawing.Point(768, 265);
+            this.buttonCreateSubscription.Location = new System.Drawing.Point(419, 144);
+            this.buttonCreateSubscription.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.buttonCreateSubscription.Name = "buttonCreateSubscription";
-            this.buttonCreateSubscription.Size = new System.Drawing.Size(251, 39);
+            this.buttonCreateSubscription.Size = new System.Drawing.Size(137, 21);
             this.buttonCreateSubscription.TabIndex = 2;
             this.buttonCreateSubscription.Text = "Create Subscription";
             this.buttonCreateSubscription.UseVisualStyleBackColor = true;
@@ -73,17 +75,20 @@
             // 
             // textBoxContainerName
             // 
-            this.textBoxContainerName.Location = new System.Drawing.Point(456, 53);
+            this.textBoxContainerName.Location = new System.Drawing.Point(249, 29);
+            this.textBoxContainerName.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.textBoxContainerName.Name = "textBoxContainerName";
-            this.textBoxContainerName.Size = new System.Drawing.Size(267, 29);
+            this.textBoxContainerName.Size = new System.Drawing.Size(147, 20);
             this.textBoxContainerName.TabIndex = 4;
+            this.textBoxContainerName.TextChanged += new System.EventHandler(this.textBoxContainerName_TextChanged);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(237, 57);
+            this.label1.Location = new System.Drawing.Point(129, 31);
+            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(181, 25);
+            this.label1.Size = new System.Drawing.Size(98, 13);
             this.label1.TabIndex = 5;
             this.label1.Text = "Nome do Container";
             // 
@@ -92,16 +97,17 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(632, 114);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(91, 25);
+            this.label2.Size = new System.Drawing.Size(50, 13);
             this.label2.TabIndex = 6;
             this.label2.Text = "EndPoint";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(859, 114);
+            this.label3.Location = new System.Drawing.Point(469, 62);
+            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(142, 25);
+            this.label3.Size = new System.Drawing.Size(79, 13);
             this.label3.TabIndex = 7;
             this.label3.Text = "Tipo de evento";
             // 
@@ -109,7 +115,7 @@
             // 
             this.textBoxEndPoint.Location = new System.Drawing.Point(554, 169);
             this.textBoxEndPoint.Name = "textBoxEndPoint";
-            this.textBoxEndPoint.Size = new System.Drawing.Size(234, 29);
+            this.textBoxEndPoint.Size = new System.Drawing.Size(129, 20);
             this.textBoxEndPoint.TabIndex = 8;
             // 
             // comboBoxEvent
@@ -118,9 +124,10 @@
             this.comboBoxEvent.Items.AddRange(new object[] {
             "1",
             "2"});
-            this.comboBoxEvent.Location = new System.Drawing.Point(825, 169);
+            this.comboBoxEvent.Location = new System.Drawing.Point(450, 92);
+            this.comboBoxEvent.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.comboBoxEvent.Name = "comboBoxEvent";
-            this.comboBoxEvent.Size = new System.Drawing.Size(209, 32);
+            this.comboBoxEvent.Size = new System.Drawing.Size(116, 21);
             this.comboBoxEvent.TabIndex = 9;
             // 
             // label4
@@ -141,7 +148,7 @@
             // 
             // FormMain
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1066, 551);
             this.Controls.Add(this.textBoxSubscriptionName);
@@ -155,6 +162,7 @@
             this.Controls.Add(this.buttonSubscribe);
             this.Controls.Add(this.buttonCreateSubscription);
             this.Controls.Add(this.buttonCreateContainer);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "FormMain";
             this.Text = "FormMain";
             this.ResumeLayout(false);

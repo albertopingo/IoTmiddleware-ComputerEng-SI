@@ -1,0 +1,665 @@
+{
+	"info": {
+		"_postman_id": "00dc9c37-a35d-4f51-b9c1-84d60fccab4c",
+		"name": "Middleware",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23624376"
+	},
+	"item": [
+		{
+			"name": "App",
+			"item": [
+				{
+					"name": "CreateApp",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "<EntityRequest>\r\n    <res_type>application</res_type>\r\n    <name>NewApplication</name>\r\n</EntityRequest>",
+							"options": {
+								"raw": {
+									"language": "xml"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:65252/api/somiod",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "65252",
+							"path": [
+								"api",
+								"somiod"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetApp",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/xml",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:65252/api/somiod/NewApplication",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "65252",
+							"path": [
+								"api",
+								"somiod",
+								"NewApplication"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ModifyApp",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "<EntityRequest>\r\n    <res_type>application</res_type>\r\n    <name>NewApplicationModified</name>\r\n</EntityRequest>",
+							"options": {
+								"raw": {
+									"language": "xml"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:65252/api/somiod/NewApplication",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "65252",
+							"path": [
+								"api",
+								"somiod",
+								"NewApplication"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteApp",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:65252/api/somiod/NewApplicationModified",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "65252",
+							"path": [
+								"api",
+								"somiod",
+								"NewApplicationModified"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetApp Modified",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/xml",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/xml",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://localhost:65252/api/somiod/NewApplicationModified",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "65252",
+							"path": [
+								"api",
+								"somiod",
+								"NewApplicationModified"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DiscoverApp",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "content-type",
+								"value": "application/xml",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "somiod-discover",
+								"value": "application",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/xml",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:65252/api/somiod",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "65252",
+							"path": [
+								"api",
+								"somiod"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Container",
+			"item": [
+				{
+					"name": "CreateContainer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "<EntityRequest>\r\n    <res_type>container</res_type>\r\n    <name>NewContainer</name>\r\n</EntityRequest>",
+							"options": {
+								"raw": {
+									"language": "xml"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:65252/api/somiod/App1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "65252",
+							"path": [
+								"api",
+								"somiod",
+								"App1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetContainer",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/xml",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:65252/api/somiod/App1/Container1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "65252",
+							"path": [
+								"api",
+								"somiod",
+								"App1",
+								"Container1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ModifyContainer",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "<EntityRequest>\r\n    <res_type>container</res_type>\r\n    <name>NewContainerModified</name>\r\n</EntityRequest>",
+							"options": {
+								"raw": {
+									"language": "xml"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:65252/api/somiod/App1/NewContainer",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "65252",
+							"path": [
+								"api",
+								"somiod",
+								"App1",
+								"NewContainer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteContainer",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:65252/api/somiod/App1/ModifiedContainer",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "65252",
+							"path": [
+								"api",
+								"somiod",
+								"App1",
+								"ModifiedContainer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetContainer Modified",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/xml",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/xml",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://localhost:65252/api/somiod/App1/ModifiedContainer",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "65252",
+							"path": [
+								"api",
+								"somiod",
+								"App1",
+								"ModifiedContainer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DiscoverContainer",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "content-type",
+								"value": "application/xml",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "somiod-discover",
+								"value": "container",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/xml",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:65252/api/somiod/App1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "65252",
+							"path": [
+								"api",
+								"somiod",
+								"App1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Data",
+			"item": [
+				{
+					"name": "CreateData",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "<EntityRequest xmlns=\"Middleware-d26\">\r\n    <res_type>data</res_type>\r\n    <data>\r\n        <name>NewData</name>\r\n        <xd>YourContent</xd>\r\n    </data>\r\n</EntityRequest>",
+							"options": {
+								"raw": {
+									"language": "xml"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:65252/api/somiod/App1/Container1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "65252",
+							"path": [
+								"api",
+								"somiod",
+								"App1",
+								"Container1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetData",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/xml",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:65252/api/somiod/App1/Container1/data/NewData",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "65252",
+							"path": [
+								"api",
+								"somiod",
+								"App1",
+								"Container1",
+								"data",
+								"NewData"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteData",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:65252/api/somiod/App1/Container1/data/NewData",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "65252",
+							"path": [
+								"api",
+								"somiod",
+								"App1",
+								"Container1",
+								"data",
+								"NewData"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DiscoverData",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "content-type",
+								"value": "application/xml",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "somiod-discover",
+								"value": "data",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/xml",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:65252/api/somiod/App1/Container1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "65252",
+							"path": [
+								"api",
+								"somiod",
+								"App1",
+								"Container1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Subscription",
+			"item": [
+				{
+					"name": "CreateSubscription",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "<EntityRequest>\r\n    <res_type>subscription</res_type>\r\n    <subscription>\r\n        <event>YourEvent</event>\r\n        <endpoint>YourEndpoint</endpoint>\r\n        <name>NewSubscription</name>\r\n    </subscription>\r\n</EntityRequest>",
+							"options": {
+								"raw": {
+									"language": "xml"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:65252/api/somiod/App1/Container1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "65252",
+							"path": [
+								"api",
+								"somiod",
+								"App1",
+								"Container1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetSubscription",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/xml",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:65252/api/somiod/App1/Container1/sub/NewSubscription",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "65252",
+							"path": [
+								"api",
+								"somiod",
+								"App1",
+								"Container1",
+								"sub",
+								"NewSubscription"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteSubscription",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:65252/api/somiod/App1/Container1/sub/NewSubscription",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "65252",
+							"path": [
+								"api",
+								"somiod",
+								"App1",
+								"Container1",
+								"sub",
+								"NewSubscription"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DiscoverSubscription",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "content-type",
+								"value": "application/xml",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "somiod-discover",
+								"value": "subscription",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/xml",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:65252/api/somiod/App1/Container1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "65252",
+							"path": [
+								"api",
+								"somiod",
+								"App1",
+								"Container1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Request-1",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "content-type",
+						"value": "application/xml",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:65252/api/somiod/app1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "65252",
+					"path": [
+						"api",
+						"somiod",
+						"app1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

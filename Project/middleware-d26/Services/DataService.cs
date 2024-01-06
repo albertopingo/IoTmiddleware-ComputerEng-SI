@@ -2,7 +2,9 @@
 using middleware_d26.Models;
 using middleware_d26.Models.DTOs;
 using System;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 
 namespace middleware_d26.Services
@@ -24,6 +26,12 @@ namespace middleware_d26.Services
             var parentContainer = dbContext.Containers.FirstOrDefault(c => c.Name == containerName && c.Parent == parentApplication.Id)
                 ?? throw new Exception("Parent container not found");
 
+            if (dbContext.DataRecords.Any(d =>
+                           d.Parent == parentContainer.Id && d.Name == dataDTO.Name))
+            {
+                throw new Exception("Data already exists");
+            }
+
             var data = new Data
             {
                 Content = dataDTO.Content,
@@ -31,19 +39,24 @@ namespace middleware_d26.Services
                 Creation_Dt = DateTime.Now,
                 Parent = parentContainer.Id
             };
+            
+            // Send notification on Creation
+            var subscriptions = dbContext.Subscriptions.Where(s => s.Parent == parentContainer.Id && s.Event.ToLower() == "creation");
+            var topic = $"{applicationName}/{containerName}";
+            //sub count
+            Debug.WriteLine($"Subscriptions count: {subscriptions.Count()}");
+
+            foreach (var subscription in subscriptions)
+            {
+
+                using (var mqttService = new MqttService(subscription.Endpoint))
+                {
+                    mqttService.PublishMessage(topic, data, "creation");
+                }
+            }
 
             dbContext.DataRecords.Add(data);
             await dbContext.SaveChangesAsync();
-
-            //var subscription = dbContext.Subscriptions.FirstOrDefault(s => s.Parent == parentContainer.Id)
-            //    ?? throw new Exception("Subscription not found");
-
-            //var topic = $"{applicationName}/{containerName}";
-
-            //using (var mqttService = new MqttService(subscription.Endpoint))
-            //{
-            //    mqttService.PublishMessage(topic, dataDTO.Content);
-            //}
         }
 
         internal Data GetData(string applicationName, string containerName, string dataName)
@@ -73,6 +86,19 @@ namespace middleware_d26.Services
             var data = dbContext.DataRecords.FirstOrDefault(d =>
                                       d.Parent == parentContainer.Id && d.Name == dataName)
                 ?? throw new Exception("Data not found");
+
+            // Send notification on Deletion
+            var subscriptions = dbContext.Subscriptions.Where(s => s.Parent == parentContainer.Id && s.Event.ToLower() == "deletion");
+            var topic = $"{applicationName}/{containerName}";
+            Debug.WriteLine($"Subscriptions count: {subscriptions.Count()}");
+
+            foreach (var subscription in subscriptions)
+            {
+                using (var mqttService = new MqttService(subscription.Endpoint))
+                {
+                    mqttService.PublishMessage(topic, data, "deletion");
+                }
+            }
 
             dbContext.DataRecords.Remove(data);
             await dbContext.SaveChangesAsync();
