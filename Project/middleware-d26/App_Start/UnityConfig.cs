@@ -40,7 +40,7 @@ namespace middleware_d26
         public static void RegisterTypes(IUnityContainer container)
         {
             container.RegisterType<MiddlewareDbContext>(new HierarchicalLifetimeManager());
-            container.RegisterType<MqttService>(new HierarchicalLifetimeManager());
+            //container.RegisterType<MqttService>(new HierarchicalLifetimeManager());
             container.RegisterType<DiscoverService>(new HierarchicalLifetimeManager());
 
             container.RegisterType<ApplicationService>(new HierarchicalLifetimeManager());

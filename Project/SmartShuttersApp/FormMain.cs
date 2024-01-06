@@ -138,5 +138,9 @@ namespace SmartShuttersApp
             }
         }
 
+        private void textBoxContainerName_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
