@@ -165,6 +165,9 @@ namespace SmartShuttersApp
             byte[] qosLevels = { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE,
             MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE};//QoS
             mClient.Subscribe(mStrTopicsInfo, qosLevels);
+
+            mClient.MqttMsgPublishReceived += client_MqttMsgPublishReceived;
+            mClient.MqttMsgSubscribed += client_MqttMsgSubscribed;
         }
         static void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
         {

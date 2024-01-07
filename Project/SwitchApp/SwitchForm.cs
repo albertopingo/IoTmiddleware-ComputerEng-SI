@@ -1,15 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -37,7 +28,8 @@ namespace SwitchApp
                 xmlDocument.LoadXml(xml);
 
                 XmlNodeList stringNodes = xmlDocument.SelectNodes("/*/*");
-                if (stringNodes.Count > 0) {
+                if (stringNodes.Count > 0)
+                {
                     foreach (XmlNode stringNode in stringNodes)
                     {
                         comboBoxContainers.Items.Add(stringNode.InnerText);
@@ -54,13 +46,11 @@ namespace SwitchApp
 
             using (HttpClient client = new HttpClient())
             {
-                client.DefaultRequestHeaders.Add("Accept", "application/xml");
-
                 HttpResponseMessage response = client.GetAsync(apiUrlWithQuery).Result;
                 // if not success (meaning application doesn't exist yet)
                 if (!response.IsSuccessStatusCode)
                 {
-                    string xmlContent = $"<EntityRequest><res_type>application</res_type><name>{appName}</name></EntityRequest>";
+                    string xmlContent = $@"<EntityRequest xmlns=""Middleware-d26""><res_type>application</res_type><name>{appName}</name></EntityRequest>";
                     StringContent content = new StringContent(xmlContent, Encoding.UTF8, "application/xml");
 
                     using (HttpClient client1 = new HttpClient())
@@ -82,24 +72,18 @@ namespace SwitchApp
 
         private void buttonOn_Click(object sender, EventArgs e)
         {
-            Send("on");
+            Send("Open");
         }
 
         private void buttonOff_Click(object sender, EventArgs e)
         {
-            Send("off");
+            Send("Close");
         }
 
         private void Send(string data)
         {
-            string xml = "" +
-                "<EntityRequest>" +
-                "<res_type>data</res_type>" +
-                "<data>" +
-                $"<content>{data}</content>" +
-                $"<name>{textBoxDataName.Text}</name>" +
-                "</data>" +
-                "</EntityRequest>";
+            string xml = $@"<EntityRequest xmlns=""Middleware-d26""><res_type>data</res_type><data><content>{data}</content><name>{textBoxDataName.Text}</name></data></EntityRequest>";
+
             StringContent content = new StringContent(xml, Encoding.UTF8, "application/xml");
 
             using (HttpClient client = new HttpClient())
