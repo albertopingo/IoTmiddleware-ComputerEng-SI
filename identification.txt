@@ -1,0 +1,26 @@
+<team>
+    <course_name>Computer Engineering</course_name>
+    <team_member>
+        <name>Alberto Pingo</name>
+        <number>2202145</number>
+        <email>2202145@my.ipleiria.pt</email>
+    </team_member>
+    
+    <team_member>
+        <name>Diogo Moreira</name>
+        <number>2211051</number>
+        <email>2211051@my.ipleiria.pt</email>
+    </team_member>
+
+    <team_member>
+        <name>Francisco Marques</name>
+        <number>2211059</number>
+        <email>2211059@my.ipleiria.pt</email>
+    </team_member>
+
+    <team_member>
+        <name>Rodrigo Sousa</name>
+        <number>2191243</number>
+        <email>2191243@my.ipleiria.pt</email>
+    </team_member>
+</team>
